@@ -157,34 +157,267 @@ interface Unit {
 
 ## 3D view
 
-Pass a `building` config to get a third view: a facade with clickable floors, a floor plate with units colored by
-status (available / not matching filters / not available), and a unit screen with floor plan, gallery and a Share popup.
+Pass a `building` config to get a third view mode next to Cards and List. It has three steps:
 
-- Units with `status` other than `'available'` are hidden from the card and list views and drawn as "not available" on
-  the plates. Units without a `status` count as available.
-- The geometry lives in the consumer: `floors[].d` are SVG paths over the facade render (`viewBox` in the render's
-  pixel space); each `FloorPlate` has a static `Base` component plus unit `slots` (`slot` = unit number without the
-  floor, e.g. `04A` for `304A`).
-- Units are placed on slots by `defaultResolveUnit` (last two digits + letter suffix = slot, the rest = floor, or
-  `unit.floor` when present). Override with `building.resolveUnit` if the data uses another numbering.
+1. **Building** — the facade render with clickable floor bands, a "Select Floor" picker, per-floor and total
+   availability.
+2. **Floor** — the floor plate with every unit colored by status (available / not matching the filters / not
+   available), status hints on hover, filters (building section, floor, beds, baths, price) and a mobile filters sheet.
+3. **Unit** — the plate with the unit highlighted, floor plan and photo gallery, price footer, Book Tour and a Share
+   popup.
+
+The package contains no building-specific code: everything that describes a particular building lives in one
+`BuildingConfig` object supplied by the consumer. Adding another building means producing that object — no package
+changes are needed.
+
+- Units whose `status` is not `'available'` are hidden from the Cards and List views and drawn as "not available" on the
+  plates. Units without a `status` count as available.
+- A plate slot with no matching unit in the data is also drawn as "not available", so the plate always shows the full
+  floor.
+
+### Adapting the package to a new building
+
+A complete, working example is the Luma Living config: `features/availability/building/` in the `luma-living` repo
+(`building.ts`, `floors.ts`, `TypicalPlate.tsx`, `assets/building.webp`). Copy its structure.
+
+#### 1. What to get from design
+
+| Asset | Used for | Notes |
+|-------|----------|-------|
+| Facade render | `building.image` | One flat image. Export the exact frame the floor bands are drawn over (crop matters, see step 2). 2x PNG → WebP is plenty. |
+| One polygon per floor | `building.floors` | Ask the designer for a (hidden) layer of vector shapes, one per floor, named by floor number, drawn over the render. |
+| One vector drawing per *typical* floor plate | `building.plates` | Floors with an identical layout share a plate. Unit outlines must be separate vectors; unit number/type labels as text frames. |
+| Unit numbering scheme | `resolveUnit` | How a unit number from the data maps to floor + position (e.g. `304A` = floor 3, slot `04A`). |
+| Building sections (optional) | `building.sections` | When several buildings/wings share a plate (Luma: 362/370/372 Livingston). |
+| Mobile designs | `sections[].viewBox` | Which part of the plate is shown on a phone. |
+
+#### 2. Extract the geometry from Figma
+
+With the Figma MCP server (or the REST API):
+
+- **Facade render**: `download_assets` on the frame the floor vectors sit in, with an explicit scale (`defaultScale: 2`).
+  Do **not** use the raw image fill: fills are often cropped/zoomed inside the frame, so the polygons won't line up.
+- **Floor polygons**: hidden layers can't be exported as a group — call `get_design_context` on each floor vector; it
+  returns an SVG in the vector's local space plus the CSS inset of the image (`inset-[-1.32%_0_-0.81%_0]`). Convert each
+  path to the render's coordinate space (the frame's top-left is `0,0`):
+
+  ```js
+  // node: x, y, w, h — the vector's box from get_metadata (absolute in the page frame)
+  // inset: top/right/bottom/left percentages from get_design_context (as positive numbers)
+  // origin: the render frame's x, y; svgW/svgH: the exported SVG viewBox size
+  const boxX = node.x - inset.left / 100 * node.w
+  const boxY = node.y - inset.top / 100 * node.h
+  const sx = node.w * (1 + (inset.left + inset.right) / 100) / svgW
+  const sy = node.h * (1 + (inset.top + inset.bottom) / 100) / svgH
+  const mapX = (x) => round(boxX + x * sx - origin.x)
+  const mapY = (y) => round(boxY + y * sy - origin.y)
+  // Walk the path tokens: H takes mapX, V takes mapY, other commands alternate x/y.
+  // Exported paths use absolute commands only; bail out if you meet a lowercase one.
+  ```
+
+  Verify by drawing all paths semi-transparently over the render (e.g. an SVG with the image as `<image>` rendered by
+  `rsvg-convert`) — every band must sit on its floor.
+- **Floor plate**: `download_assets` with `defaultFormat: 'svg'` on the plate frame. In the file:
+  - vectors with a fill are **units** → `slots[].d`;
+  - stroke-only vectors (balconies, corridor, cores, section dividers) → `Base`;
+  - text is exported as outlined paths — don't copy those; take label positions from `get_metadata` instead (the
+    "number + type" frames) and render text with `<text>` so it follows the theme font.
+  The plate's coordinate space is the frame itself; pick a `viewBox` that trims empty margins but keeps captions.
+
+#### 3. Write the config
+
+```
+building/
+  assets/building.webp
+  floors.ts          // BuildingFloor[]
+  TypicalPlate.tsx   // FloorPlate (Base + slots); one file per typical plate
+  building.ts        // BuildingConfig
+```
+
+```ts
+// floors.ts — d in the render's pixel space (the same space as building.viewBox)
+export const BUILDING_FLOORS: BuildingFloor[] = [
+  { floor: 1, d: 'M632.5 662V694.5L78.4 696L23.5 666.5V634.5L78.4 662H632.5Z' },
+  // …one entry per floor; the floor picker lists exactly these floors, sorted
+]
+```
 
 ```tsx
-const building: BuildingConfig = {
-  image: { src: '/building.webp', alt: 'Building' },
-  viewBox: '0 0 652 715',
-  floors: [{ floor: 1, d: 'M632.5 662V694.5…Z' } /* … */],
-  sections: [{ id: 'A', label: '372 Livingston', viewBox: '665 28 392 255' }],
-  plates: [{ id: 'typical', floors: [1, 2, 3], viewBox: '20 28 1040 322', Base: PlateBase, slots }],
+// TypicalPlate.tsx
+const STROKE = { stroke: 'var(--ul-plate-stroke)', strokeWidth: 1.5, fill: 'none' } as const
+
+function TypicalPlateBase() {
+  // Static drawing only: no ids (the plate can be rendered twice), no event handlers.
+  // Units are drawn on top of this by the package.
+  return (
+    <g aria-hidden="true">
+      {BALCONIES.map((d) => <path key={d} d={d} {...STROKE} />)}
+      <text x={329} y={214.5} fontSize={9} fill="var(--ul-plate-label)" textAnchor="middle">CORE C</text>
+    </g>
+  )
+}
+
+const SLOTS: FloorPlateSlot[] = [
+  {
+    slot: '01C',          // unit number without the floor prefix
+    section: 'C',         // BuildingSection.id
+    typeLabel: '2-Bed',   // shown even when the unit is missing from the data
+    d: 'M186.494 57.3008H31.1602V143.401H186.494V57.3008Z',
+    labelX: 107,          // top-center of the "number + type" label block
+    labelY: 82,
+    // labelScale: 0.75,  // for narrow units
+  },
+]
+
+export const TYPICAL_PLATE: FloorPlate = {
+  id: 'typical',
+  floors: [2, 3, 4 /* … */],   // every floor that uses this layout
+  viewBox: '20 28 1040 322',
+  Base: TypicalPlateBase,
+  slots: SLOTS,
 }
 ```
 
-### Syncing navigation with the URL
+```ts
+// building.ts
+import render from './assets/building.webp'
 
-`navFromSearchParams` / `navToSearchParams` read and write `?view=3d&floor=3&section=A&unit=304A`. Keep `nav`
-controlled, write the URL in `onNavChange` (`history.pushState` when `meta.push`, else `replaceState`) and re-read it on
-`popstate` so the browser back button walks between steps.
+export const BUILDING: BuildingConfig = {
+  image: { src: render.src, width: render.width, height: render.height, blurDataURL: render.blurDataURL, alt: '…' },
+  viewBox: '0 0 652 715',       // the render frame size in design pixels — the space of floors[].d
+  floors: BUILDING_FLOORS,
+  sections: [
+    // Order = order of the building pills. viewBox crops the plate to this section on mobile.
+    { id: 'C', label: '362 Livingston', viewBox: '25 28 360 255' },
+    { id: 'B', label: '370 Livingston', viewBox: '372 28 305 255' },
+  ],
+  plates: [GROUND_PLATE, TYPICAL_PLATE, PENTHOUSE_PLATE],
+  // resolveUnit, formatUnitNumber — see below
+}
+```
 
-> The package keeps the `ul-` CSS class prefix of `@cmdquery/units-listing`. Don't render both packages on one page.
+Rules the package relies on:
+
+- `floors[].floor` values are the floor numbers used everywhere (pills, URL, plates). A floor with no plate shows the
+  empty state.
+- A slot's `slot` + the floor must identify the unit: two slots on one plate can't share a `slot`.
+- Label text is placed at `labelY + 15` (number, 14px) and `labelY + 33` (type, 9px) in plate units; keep plate
+  coordinates at design scale so these sizes match.
+- With a single section, pass one section (no `viewBox` needed); the building switcher is hidden.
+
+#### 4. Map units to slots
+
+`defaultResolveUnit` takes the last two digits plus a letter suffix as the slot and everything before it as the floor
+(`304A` → floor 3, slot `04A`; `1204A` → floor 12). `unit.floor`, when present in the data, wins over the parsed floor.
+For any other scheme provide `resolveUnit`, and `formatUnitNumber` for the reverse direction (used to label slots that
+have no unit in the data):
+
+```ts
+// Data uses "3-04" and the building letter comes from the SeeClick building id.
+const SECTION_BY_BUILDING_ID: Record<number, string> = { 101: 'A', 102: 'B' }
+
+const building: BuildingConfig = {
+  // …
+  resolveUnit: (unit) => {
+    const [floor, position] = unit.unitNumber.split('-')
+    const section = SECTION_BY_BUILDING_ID[Number(unit.buildingId)]
+    return floor && position && section ? { floor: Number(floor), slot: `${position}${section}` } : null
+  },
+  formatUnitNumber: (floor, slot) => `${floor}-${slot.slice(0, 2)}`,
+}
+```
+
+Units for which `resolveUnit` returns `null` still appear in Cards/List but not on the plates. If a building's units come
+from several SeeClick tokens, fetch them all, `mapScrUnit` each and concatenate — `buildingId` is kept on every unit.
+
+#### 5. Render it
+
+```tsx
+'use client'
+import { UnitsListing, navFromSearchParams, navToSearchParams, type AvailabilityNav } from '@cmdquery/units-listing-3d'
+import '@cmdquery/units-listing-3d/styles'
+
+const DEFAULT_NAV: AvailabilityNav = { view: '3d', floor: null, section: null, unit: null }
+const readNav = (query: string) => ({ ...DEFAULT_NAV, ...navFromSearchParams(new URLSearchParams(query)) })
+
+export function Availability({ units, initialQuery }: { units: Unit[]; initialQuery: string }) {
+  const [nav, setNav] = useState(() => readNav(initialQuery))
+
+  useEffect(() => {
+    const onPopState = () => setNav(readNav(window.location.search))
+    window.addEventListener('popstate', onPopState)
+    return () => window.removeEventListener('popstate', onPopState)
+  }, [])
+
+  return (
+    <UnitsListing
+      building={BUILDING}
+      units={units}
+      nav={nav}
+      onNavChange={(next, { push }) => {
+        setNav(next)
+        const url = `${location.pathname}?${navToSearchParams(next, location.search)}`
+        if (push) history.pushState(null, '', url)
+        else history.replaceState(null, '', url)
+      }}
+    />
+  )
+}
+```
+
+- Pass the request's query string from the server page (`initialQuery`) so a shared link (`?view=3d&floor=3&unit=304A`)
+  renders the right step on the first paint. A deep link to a unit that is gone or leased falls back to its floor.
+- Use `history.pushState/replaceState`, not `router.push/replace`: a router navigation re-renders the server page and
+  re-fetches the units on every click. Next.js keeps `useSearchParams` in sync with native history calls.
+- `onNavChange` gets `push: true` for building → floor → unit steps (so the browser back button walks back through
+  them) and `false` for view/section/floor switches.
+- The package's main entry creates React context at module scope — import it from client components only. The
+  `adapters/seeClickRent` entry is safe on the server.
+- Without `nav`, the component manages navigation itself (`defaultNav` sets the start) — fine when URL sync isn't needed.
+- `getUnitShareUrl` overrides the link in the Share popup (default: current URL with the unit's nav params).
+
+#### 6. Theme and texts
+
+All 3D colors are CSS variables; defaults match the Luma design. Override them via `themeVars` (or `theme` for the
+typed subset):
+
+| Token | Default | Used for |
+|-------|---------|----------|
+| `--ul-pill-bg` / `--ul-pill-bg-hover` / `--ul-pill-bg-active` | `#e9e6e2` / `#dcd3c8` / `#382d29` | Filter pills, price range, chips |
+| `--ul-pill-text` / `--ul-pill-text-active` | `#382d29` / `#f4f1ed` | Pill text |
+| `--ul-status-available` / `-not-matching` / `-unavailable` | `#bac48e` / `#cbbead` / `#ebeaea` | Legend dots |
+| `--ul-plate-available` (+`-hover`) | `#d3dda6` (`#bac48e`) | Available unit fill |
+| `--ul-plate-not-matching` (+`-hover`) | `#dcd3c8` (`#cbbead`) | Filtered-out unit fill |
+| `--ul-plate-unavailable` | `#ebeaea` | Not available unit fill |
+| `--ul-plate-stroke` | `#332925` | Unit outlines (use it in `Base` too) |
+| `--ul-plate-label` / `-label-muted` | `#382d29` / `#a39e9d` | Unit number / type text |
+| `--ul-plate-label-available` / `-label-available-muted` | `#363928` / `#7d845d` | Text on available units |
+| `--ul-plate-tooltip-bg` / `--ul-plate-tooltip-text` | `#1f1917` / `#e9e6e2` | Hover hints on the plate |
+| `--ul-building-floor-highlight` | `rgba(143, 185, 125, 0.8)` | Hovered floor band on the facade |
+
+Every string is in `labels` (`selectFloor`, `hoverToSelectFloor`, `availableApartments`, `statusAvailable`,
+`hintAvailable`, `hintNotMatching`, `hintNotAvailable`, `shareTitle`, `netEffectiveNote`, …). Hints use `\n` for line
+breaks. See `UnitsListingLabels` for the full list.
+
+Finer layout tweaks go through the `ul-3d-*`, `ul-plate-*`, `ul-bmap-*` and `ul-legend-*` classes. The package keeps
+the `ul-` CSS prefix of `@cmdquery/units-listing`, so don't render both packages on one page.
+
+#### 7. Checklist
+
+- [ ] Every floor band lines up with the render (overlay check).
+- [ ] Every floor in `floors` is covered by a plate.
+- [ ] Each unit number in the data resolves to an existing slot (log units where `resolveUnit` returns `null` or the slot
+      is missing on the plate).
+- [ ] Slot type labels match the data's bed counts.
+- [ ] Mobile: each section `viewBox` shows its whole building without clipping.
+- [ ] Deep link `?view=3d&floor=N&unit=X` opens the unit; browser back returns to the floor, then the building.
+
+#### Limitations
+
+- The screen layouts (column widths, positions of legend, hints and totals) follow the Luma design; they can be restyled
+  with CSS but not restructured through props.
+- One facade image per building — no multiple angles or real 3D.
+- Units must be mapped to the `Unit` type; only a SeeClick adapter ships with the package.
 
 ## Theming
 
