@@ -174,6 +174,11 @@ changes are needed.
   plates. Units without a `status` count as available.
 - A plate slot with no matching unit in the data is also drawn as "not available", so the plate always shows the full
   floor.
+- Returning to the building step clears the filters. On a phone the floor plate is shown whole and panned sideways by
+  dragging; the building pills follow the pan.
+- **Escape** steps back (unit → floor → building) while the 3D view is on screen. It is ignored when focus is in a form
+  field, an `aria-modal` dialog is open, the page scroll is locked, or the event was already handled. If your page has
+  its own overlays that close on Escape, call `e.preventDefault()` in their handler so the 3D view leaves the key alone.
 
 ### Adapting the package to a new building
 

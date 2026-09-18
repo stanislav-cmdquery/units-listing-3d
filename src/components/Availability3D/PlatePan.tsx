@@ -29,6 +29,8 @@ export function PlatePan({ model, plate, floor, section, onSectionChange, onSele
   const [width, setWidth] = useState<number | null>(null)
   // Section the pan position currently shows, so a pill change caused by panning doesn't scroll back.
   const shownSectionRef = useRef<string | null>(null)
+  // Track width the current pan position was computed for; a resize (rotation, toolbar) re-centers.
+  const centeredWidthRef = useRef<number | null>(null)
   // The parent passes a fresh callback each render; re-subscribing would drop a pending settle timer.
   const onSectionChangeRef = useRef(onSectionChange)
   onSectionChangeRef.current = onSectionChange
@@ -64,13 +66,17 @@ export function PlatePan({ model, plate, floor, section, onSectionChange, onSele
     return gutter + ((x - plateBox.x) / plateBox.width) * width
   }
 
-  // Pill tapped (or first render): center that section.
+  // Pill tapped, first render or resized: center that section.
   useEffect(() => {
     const scroller = scrollerRef.current
     const target = sectionBoxes.find((s) => s.id === section)
-    if (!scroller || !target || width == null || shownSectionRef.current === section) return
-    const smooth = shownSectionRef.current != null
+    if (!scroller || !target || width == null) return
+    const resized = centeredWidthRef.current !== width
+    if (shownSectionRef.current === section && !resized) return
+    // Animate only a pill change; first render and resizes jump straight there.
+    const smooth = shownSectionRef.current != null && !resized
     shownSectionRef.current = section
+    centeredWidthRef.current = width
     const center = toPx(target.box.x + target.box.width / 2)
     scroller.scrollTo({ left: center - scroller.clientWidth / 2, behavior: smooth ? 'smooth' : 'auto' })
     // toPx only depends on width and the plate box, both covered.

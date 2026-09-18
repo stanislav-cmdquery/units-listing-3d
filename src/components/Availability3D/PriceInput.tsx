@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { formatUSD } from '../../utils/formatPrice'
 
@@ -15,12 +15,20 @@ type Props = {
 // Shows "$1,200"; while focused it's free text, committed on blur or Enter (as in the-carroll).
 export function PriceInput({ label, value, onCommit, align = 'start' }: Props) {
   const [draft, setDraft] = useState<string | null>(null)
+  // Escape blurs the input, and the blur handler still sees the pre-Escape draft in its closure.
+  const cancelRef = useRef(false)
 
   const commit = () => {
-    if (draft == null) return
-    const parsed = Number(draft.replace(/[^0-9]/g, ''))
+    const text = draft
     setDraft(null)
-    if (draft.trim() !== '' && Number.isFinite(parsed)) onCommit(parsed)
+    if (cancelRef.current) {
+      cancelRef.current = false
+      return
+    }
+    // Needs at least one digit: a lone "$" must not commit 0. Cents are rounded, not glued on.
+    if (text == null || !/\d/.test(text)) return
+    const parsed = Math.round(parseFloat(text.replace(/[^0-9.]/g, '')))
+    if (Number.isFinite(parsed)) onCommit(parsed)
   }
 
   return (
@@ -40,7 +48,7 @@ export function PriceInput({ label, value, onCommit, align = 'start' }: Props) {
         onKeyDown={(e) => {
           if (e.key === 'Enter') e.currentTarget.blur()
           if (e.key === 'Escape') {
-            setDraft(null)
+            cancelRef.current = true
             e.currentTarget.blur()
           }
         }}

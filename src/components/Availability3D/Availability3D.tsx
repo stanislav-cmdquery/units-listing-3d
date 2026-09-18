@@ -101,14 +101,21 @@ export function Availability3D({
     prevStepRef.current = step
   }, [step])
 
-  // Escape acts like the "Return to ..." link of the current step. Registered once on mount, so it runs
-  // before any overlay's own Escape handler and can see that a dialog is still open.
+  // Escape acts like the "Return to ..." link of the current step, but only while the 3D view is on
+  // screen and nothing else claims the key. Overlays that close on Escape should call
+  // e.preventDefault(); as a fallback, an open aria-modal dialog or a scroll-locked body (menus,
+  // sheets) also blocks it. Registered once on mount, so it runs before overlays opened later.
+  const rootRef = useRef<HTMLDivElement>(null)
   const escapeRef = useRef<(() => void) | null>(null)
   escapeRef.current = step === 'unit' ? backToFloor : step === 'floor' ? backToBuilding : null
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key !== 'Escape' || e.defaultPrevented || !escapeRef.current) return
-      if (document.querySelector('[aria-modal="true"]')) return
+      const root = rootRef.current
+      if (!root) return
+      const rect = root.getBoundingClientRect()
+      if (rect.bottom <= 0 || rect.top >= window.innerHeight) return
+      if (document.body.style.overflow === 'hidden' || document.querySelector('[aria-modal="true"]')) return
       const target = e.target as HTMLElement | null
       if (target?.closest('input, textarea, select, [contenteditable="true"]')) return
       escapeRef.current()
@@ -135,7 +142,7 @@ export function Availability3D({
   const AnimatePresence = motion.AnimatePresence
 
   return (
-    <div className="ul-3d-root">
+    <div ref={rootRef} className="ul-3d-root">
       <AnimatePresence mode="wait" initial={false}>
         <MotionDiv
           key={step}
