@@ -1,0 +1,94 @@
+.ul-concession-popup {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(254, 243, 229, 0.97);
+  cursor: pointer;
+  z-index: 2;
+  animation: show 150ms cubic-bezier(0.38, 0.97, 0.56, 0.76) forwards;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.ul-concession-content {
+  width: max-content;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ul-concession-prices {
+  color: var(--ul-color-accent);
+  font-size: 32px;
+  font-style: normal;
+  font-weight: var(--ul-font-weight-regular);
+  line-height: 100%;
+  display: flex;
+  gap: var(--ul-space-2);
+  margin-bottom: var(--ul-space-5);
+  align-items: center;
+}
+
+.ul-concession-price-net {
+  display: flex;
+  align-items: center;
+  gap: var(--ul-space-1);
+  flex-wrap: nowrap;
+}
+
+.ul-concession-price-gross {
+  color: var(--ul-color-text-muted);
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  gap: var(--ul-space-1);
+}
+
+.ul-concession-net-effective {
+  color: var(--ul-color-text);
+  text-align: center;
+  font-size: var(--ul-font-size-md);
+  font-style: normal;
+  font-weight: var(--ul-font-weight-regular);
+  line-height: 140%;
+  max-width: 260px;
+  margin: auto;
+}
+
+.ul-concession-save-badge {
+  padding: var(--ul-space-1) var(--ul-space-2);
+  border-radius: var(--ul-radius-xs);
+  background: var(--ul-color-price);
+  color: var(--ul-color-accent);
+  font-size: var(--ul-font-size-md);
+  font-style: normal;
+  font-weight: var(--ul-font-weight-medium);
+  line-height: 140%;
+  letter-spacing: -0.64px;
+  margin-bottom: var(--ul-space-6);
+}
+
+.ul-concession-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+  transition: all var(--ul-transition);
+  color: var(--ul-color-text);
+}
+
+.ul-concession-close:hover {
+  opacity: 0.7;
+}
+
+@keyframes show {
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}

@@ -1,0 +1,69 @@
+.ul-view-toggle-root {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: var(--ul-radius-pill);
+  background-color: var(--ul-color-bg);
+  height: 40px;
+}
+
+.ul-view-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ul-space-1);
+  padding: 8px 12px;
+  border-radius: var(--ul-radius-pill);
+  border: none;
+  background-color: transparent;
+  color: var(--ul-color-price-text);
+  font-size: var(--ul-font-size-base);
+  font-style: normal;
+  font-weight: var(--ul-font-weight-medium);
+  line-height: 110%;
+  letter-spacing: -0.28px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all var(--ul-transition);
+  user-select: none;
+}
+
+.ul-view-toggle-btn:hover {
+  color: rgba(38, 37, 35, 0.7);
+}
+
+.ul-view-toggle-btn-active {
+  background-color: var(--ul-color-accent);
+  color: var(--ul-color-accent-contrast);
+  cursor: default;
+}
+
+.ul-view-toggle-btn-active:hover {
+  color: var(--ul-color-accent-contrast);
+}
+
+.ul-view-toggle-icon {
+  display: block;
+}
+
+.ul-view-toggle-label {
+  display: inline;
+}
+
+/* Three options don't fit with labels on mobile: icons only, per design. */
+.ul-view-toggle-root-compact .ul-view-toggle-btn {
+  padding: 8px 20px;
+}
+
+.ul-view-toggle-root-compact .ul-view-toggle-label {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .ul-view-toggle-btn,
+  .ul-view-toggle-root-compact .ul-view-toggle-btn {
+    padding: 10px 18px;
+  }
+
+  .ul-view-toggle-root-compact .ul-view-toggle-label {
+    display: inline;
+  }
+}

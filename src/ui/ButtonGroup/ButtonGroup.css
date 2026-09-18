@@ -1,0 +1,39 @@
+.ul-btn-group-root {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.ul-btn-group-item {
+  font-family: var(--ul-font-family);
+  min-width: 50px;
+  height: 40px;
+  display: flex;
+  padding: 8px 16px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 200px;
+  border: 1px solid var(--ul-color-text);
+  background: transparent;
+  color: var(--ul-color-text);
+  font-size: var(--ul-font-size-base);
+  font-style: normal;
+  font-weight: var(--ul-font-weight-medium);
+  line-height: 110%;
+  letter-spacing: -0.28px;
+  text-transform: uppercase;
+  transition: all 200ms ease-in-out;
+  cursor: pointer;
+}
+
+.ul-btn-group-item:hover:not(.ul-btn-group-active) {
+  background-color: rgba(45, 35, 46, 0.08);
+}
+
+.ul-btn-group-active {
+  background-color: var(--ul-color-price-text);
+  border-color: var(--ul-color-price-text);
+  color: var(--ul-color-accent-contrast);
+  cursor: default;
+}

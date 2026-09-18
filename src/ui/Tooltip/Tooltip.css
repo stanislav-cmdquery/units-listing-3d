@@ -1,0 +1,53 @@
+.ul-tooltip-root {
+  position: relative;
+  display: inline-flex;
+}
+
+.ul-tooltip-positioner {
+  position: fixed;
+  transform: translateX(-50%) translateY(calc(-100% - 12px));
+  z-index: var(--ul-z-modal);
+}
+
+.ul-tooltip-box {
+  position: relative;
+  background: var(--ul-color-text);
+  border-radius: var(--ul-radius-sm);
+  padding: var(--ul-space-4);
+  width: max-content;
+  color: #fff;
+  font-family: var(--ul-font-family);
+}
+
+.ul-tooltip-close {
+  position: absolute;
+  top: var(--ul-space-4);
+  right: var(--ul-space-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  line-height: 0;
+  color: #fff;
+}
+
+.ul-tooltip-content {
+  display: flex;
+}
+
+.ul-tooltip-content-with-close {
+  display: flex;
+  padding-right: var(--ul-space-5);
+}
+
+.ul-tooltip-arrow {
+  position: absolute;
+  bottom: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  line-height: 0;
+  color: var(--ul-color-text);
+}

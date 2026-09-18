@@ -1,0 +1,13 @@
+@import './tokens.css';
+
+.ul-root *,
+.ul-root *::before,
+.ul-root *::after {
+  box-sizing: border-box;
+}
+
+.ul-root {
+  font-family: var(--ul-font-family);
+  color: var(--ul-color-text);
+  line-height: var(--ul-line-height);
+}

@@ -1,0 +1,58 @@
+.ul-pills-root {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ul-pills-scroll {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.ul-pills-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.ul-pill {
+  flex-shrink: 0;
+  min-width: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--ul-radius-pill);
+  background-color: var(--ul-pill-bg);
+  color: var(--ul-pill-text);
+  font-family: var(--ul-font-family);
+  font-size: var(--ul-font-size-md);
+  font-weight: var(--ul-font-weight-medium);
+  line-height: 1.4;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--ul-transition),
+    color var(--ul-transition);
+}
+
+.ul-pill:hover:not(:disabled),
+.ul-pill:focus-visible {
+  background-color: var(--ul-pill-bg-hover);
+}
+
+.ul-pill:focus-visible {
+  outline: 2px solid var(--ul-pill-bg-active);
+  outline-offset: 2px;
+}
+
+.ul-pill-active,
+.ul-pill-active:hover:not(:disabled) {
+  background-color: var(--ul-pill-bg-active);
+  color: var(--ul-pill-text-active);
+}
+
+.ul-pill:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

@@ -1,0 +1,297 @@
+.ul-card-root {
+  width: 100%;
+  height: max-content;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--ul-color-surface);
+  border-radius: var(--ul-radius-lg);
+  overflow: hidden;
+  color: var(--ul-color-text-secondary);
+  position: relative;
+}
+
+.ul-card-top {
+  width: 100%;
+  display: flex;
+  gap: var(--ul-space-1);
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--ul-font-size-lg);
+  font-style: normal;
+  font-weight: 300;
+  line-height: 100%;
+  padding: var(--ul-space-3) var(--ul-space-4);
+  background-color: var(--ul-color-bg);
+}
+
+.ul-card-price-net {
+  display: flex;
+  align-items: center;
+  gap: var(--ul-space-1);
+  color: var(--ul-color-price-text);
+  font-size: var(--ul-font-size-md);
+  font-style: normal;
+  font-weight: 300;
+  line-height: 130%;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  padding: 5px 8px 3px 8px;
+  border-radius: var(--ul-radius-xs);
+  background-color: var(--ul-color-price);
+  margin-left: auto;
+  border: none;
+  font-family: inherit;
+}
+
+button.ul-card-price-net {
+  cursor: pointer;
+  transition: background-color var(--ul-transition);
+}
+
+button.ul-card-price-net:hover {
+  background-color: rgba(229, 207, 180, 0.7);
+}
+
+.ul-card-bottom {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ul-space-3);
+  gap: var(--ul-space-1);
+  background-color: var(--ul-color-bg);
+}
+
+.ul-card-center {
+  width: 100%;
+  aspect-ratio: var(--aspect, 4 / 3);
+  position: relative;
+  overflow: hidden;
+}
+
+/* A card with no floor plan/photos keeps only the 4/3 fallback aspect and
+   would end up shorter than image cards in the same grid row: let it stretch
+   to the row height instead and center the fallback message. */
+.ul-card-no-media {
+  height: auto;
+}
+
+.ul-card-no-media .ul-card-center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ul-card-empty {
+  padding: 0 20px;
+  color: var(--ul-color-text-secondary);
+  font-size: var(--ul-font-size-sm);
+  text-align: center;
+}
+
+.ul-card-has-gallery:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 30px;
+  background: linear-gradient(180deg, rgba(240, 236, 227, 0) 0%, rgba(0, 0, 0, 0.15) 81%);
+  z-index: 1;
+  visibility: hidden;
+  opacity: 0;
+  transition: all var(--ul-transition);
+  pointer-events: none;
+}
+
+.ul-card-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ul-card-image-skeleton {
+  position: absolute;
+  inset: 0;
+}
+
+.ul-card-info-open {
+  background-color: rgba(255, 255, 255, 0.85);
+}
+
+.ul-card-price-info-icon {
+  flex-shrink: 0;
+}
+
+.ul-card-enlarge-button {
+  height: 40px;
+  border-radius: 100px;
+  background: var(--ul-color-price);
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  cursor: pointer;
+  display: flex;
+  padding: 8px;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  outline: none;
+}
+
+.ul-card-enlarge-text {
+  color: var(--ul-color-price-text);
+  font-size: var(--ul-font-size-base);
+  font-style: normal;
+  font-weight: var(--ul-font-weight-medium);
+  line-height: 140%;
+  letter-spacing: -0.56px;
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition:
+    max-width 250ms ease-in-out,
+    opacity 150ms ease-in-out,
+    margin-right 250ms ease-in-out;
+  margin-right: 0;
+  display: flex;
+}
+
+.ul-card-enlarge-button:hover .ul-card-enlarge-text {
+  opacity: 1;
+  max-width: 200px;
+  margin-right: 8px;
+}
+
+.ul-card-enlarge-icon {
+  color: var(--ul-color-price-text);
+}
+
+.ul-card-nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--ul-color-price);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ul-color-text-secondary);
+  transition:
+    background-color var(--ul-transition),
+    opacity var(--ul-transition);
+}
+
+.ul-card-nav-button:disabled {
+  background: rgba(229, 207, 180, 0.4);
+  cursor: default;
+}
+
+.ul-card-nav-button:not(:disabled):hover {
+  background: rgba(229, 207, 180, 0.8);
+}
+
+.ul-card-nav-prev {
+  left: 16px;
+}
+
+.ul-card-nav-next {
+  right: 16px;
+}
+
+.ul-card-dots {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+}
+
+.ul-card-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  padding: 0;
+  transition: background-color var(--ul-transition);
+}
+
+.ul-card-dot-active {
+  background: #fff;
+}
+
+.ul-card-on-request {
+  font-size: var(--ul-font-size-sm);
+  font-style: normal;
+  font-weight: 300;
+  line-height: 130%;
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  .ul-card-root {
+    width: 100%;
+  }
+
+  .ul-card-top {
+    font-size: var(--ul-font-size-xl);
+    padding: var(--ul-space-4);
+    gap: var(--ul-space-2);
+  }
+
+  .ul-card-bottom {
+    padding: var(--ul-space-4);
+    gap: 6px;
+    justify-content: space-between;
+  }
+
+  .ul-card-enlarge-button,
+  .ul-card-nav-button,
+  .ul-card-dots {
+    visibility: hidden;
+    opacity: 0;
+    transition: all var(--ul-transition);
+    pointer-events: none;
+  }
+
+  .ul-card-center:hover .ul-card-enlarge-button,
+  .ul-card-center:hover .ul-card-nav-button,
+  .ul-card-has-gallery:hover:before,
+  .ul-card-center:hover .ul-card-dots {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: all;
+  }
+}
+
+@media (min-width: 1085px) {
+  .ul-card-top {
+    font-size: var(--ul-font-size-xl);
+    padding: var(--ul-space-4) var(--ul-space-5);
+  }
+
+  .ul-card-bottom {
+    padding: var(--ul-space-4);
+    gap: 6px;
+    justify-content: space-between;
+  }
+}
+
+/* Bed-count variants — override token values per property type */
+.ul-card-beds-0 {}
+.ul-card-beds-1 {}
+.ul-card-beds-2 {}
+.ul-card-beds-many {}

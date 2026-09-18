@@ -1,0 +1,78 @@
+/* Two native range inputs stacked on one track; only the thumbs receive pointer events. */
+.ul-range-root {
+  position: relative;
+  height: 20px;
+  width: 100%;
+}
+
+.ul-range-track {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  right: 10px;
+  height: 1px;
+  background-color: var(--ul-color-border);
+}
+
+.ul-range-track::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--ul-range-from);
+  right: calc(100% - var(--ul-range-to));
+  background-color: var(--ul-pill-bg-active);
+}
+
+.ul-range-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: transparent;
+  pointer-events: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.ul-range-input::-webkit-slider-runnable-track {
+  background: transparent;
+  border: none;
+}
+
+.ul-range-input::-moz-range-track {
+  background: transparent;
+  border: none;
+}
+
+.ul-range-input::-webkit-slider-thumb {
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--ul-pill-bg-active);
+  cursor: pointer;
+  pointer-events: auto;
+  -webkit-appearance: none;
+}
+
+.ul-range-input::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--ul-pill-bg-active);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.ul-range-input:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--ul-pill-bg-active);
+  outline-offset: 2px;
+}
+
+.ul-range-input:focus-visible::-moz-range-thumb {
+  outline: 2px solid var(--ul-pill-bg-active);
+  outline-offset: 2px;
+}

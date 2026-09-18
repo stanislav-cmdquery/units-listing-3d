@@ -1,0 +1,32 @@
+.ul-bottom-actions-book-tour,
+.ul-bottom-actions-floor-plans {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: var(--ul-space-1);
+  color: var(--ul-color-text);
+  font-size: var(--ul-font-size-lg);
+  font-style: normal;
+  font-weight: 300;
+  line-height: 120%;
+  letter-spacing: 0.36px;
+  padding: var(--ul-space-1);
+  flex-shrink: 0;
+  transition: all var(--ul-transition);
+  border-radius: var(--ul-radius-xs);
+}
+
+.ul-bottom-actions-book-tour:hover,
+.ul-bottom-actions-floor-plans:hover {
+  background-color: rgba(202, 188, 180, 0.6);
+}
+
+.ul-bottom-actions-book-tour:active,
+.ul-bottom-actions-floor-plans:active {
+  background-color: rgba(254, 243, 229, 0.8);
+}
+
+.ul-bottom-actions-text {
+  color: inherit;
+  text-decoration: none;
+}

@@ -1,0 +1,6 @@
+dist/
+node_modules/
+*.tsbuildinfo
+.playwright-mcp
+.omc
+*.tgz

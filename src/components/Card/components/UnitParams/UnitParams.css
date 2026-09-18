@@ -1,0 +1,28 @@
+.ul-unit-params-params {
+  display: flex;
+  align-items: center;
+  gap: var(--ul-space-2);
+  font-size: var(--ul-font-size-xl);
+  font-style: normal;
+  font-weight: 300;
+  line-height: 130%;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--ul-color-text);
+}
+
+.ul-unit-params-item {
+  display: flex;
+  align-items: center;
+  gap: var(--ul-space-1);
+  font-size: var(--ul-font-size-md);
+  font-style: normal;
+  font-weight: var(--ul-font-weight-medium);
+  line-height: 140%;
+  letter-spacing: -0.64px;
+}
+
+.ul-unit-params-circle {
+  flex-shrink: 0;
+  color: var(--ul-color-text-subtle);
+}

@@ -1,0 +1,860 @@
+/* ---------- Shared ---------- */
+
+.ul-3d-root {
+  font-family: var(--ul-font-family);
+  color: var(--ul-pill-text);
+}
+
+.ul-3d-desktop-only {
+  display: none;
+}
+
+.ul-3d-header {
+  margin-bottom: var(--ul-space-5);
+}
+
+.ul-3d-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ul-space-4);
+}
+
+.ul-3d-field-label {
+  margin: 0;
+  font-size: var(--ul-font-size-md);
+  font-weight: var(--ul-font-weight-medium);
+  line-height: 1;
+}
+
+.ul-3d-link {
+  font-size: var(--ul-font-size-md);
+  font-weight: var(--ul-font-weight-medium);
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.ul-3d-chip {
+  align-self: center;
+  margin: 0;
+  padding: 4px 12px;
+  border-radius: var(--ul-radius-xs);
+  background-color: var(--ul-pill-bg);
+  font-size: var(--ul-font-size-md);
+  font-weight: var(--ul-font-weight-medium);
+  line-height: 1.4;
+}
+
+.ul-3d-back,
+.ul-3d-icon-btn,
+.ul-3d-footer-action,
+.ul-3d-share-target,
+.ul-3d-share-copy,
+.ul-3d-clear,
+.ul-3d-sheet-bar,
+.ul-3d-sheet-clear,
+.ul-3d-sheet-apply,
+.ul-3d-media-frame,
+.ul-3d-media-nav {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.ul-3d-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ul-space-2);
+  align-self: flex-start;
+}
+
+.ul-3d-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ul-3d-back:focus-visible,
+.ul-3d-icon-btn:focus-visible,
+.ul-3d-footer-action:focus-visible,
+.ul-3d-share-target:focus-visible,
+.ul-3d-share-copy:focus-visible,
+.ul-3d-clear:focus-visible,
+.ul-3d-media-frame:focus-visible,
+.ul-3d-media-nav:focus-visible {
+  outline: 2px solid var(--ul-pill-bg-active);
+  outline-offset: 2px;
+}
+
+.ul-3d-empty {
+  margin: 0;
+  padding: var(--ul-space-7) 0;
+  text-align: center;
+}
+
+/* ---------- Legend ---------- */
+
+.ul-legend-root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ul-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ul-legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--ul-space-2);
+  font-size: var(--ul-font-size-md);
+  font-weight: var(--ul-font-weight-medium);
+  line-height: 1.4;
+  color: var(--ul-color-text);
+}
+
+.ul-legend-dot {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+.ul-legend-dot-available {
+  background-color: var(--ul-status-available);
+}
+
+.ul-legend-dot-not-matching {
+  background-color: var(--ul-status-not-matching);
+}
+
+.ul-legend-dot-unavailable {
+  background-color: var(--ul-status-unavailable);
+}
+
+/* ---------- Building view ---------- */
+
+.ul-3d-building {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ul-space-5);
+}
+
+.ul-3d-building-aside {
+  display: contents;
+}
+
+.ul-3d-building-floors {
+  order: 3;
+}
+
+.ul-3d-building-stage {
+  order: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ul-space-5);
+}
+
+.ul-3d-building-hint,
+.ul-3d-building-total {
+  display: none;
+}
+
+.ul-3d-building-total {
+  align-items: center;
+  justify-content: center;
+  gap: var(--ul-space-2);
+  margin: 0;
+  font-size: var(--ul-font-size-md);
+  font-weight: var(--ul-font-weight-medium);
+  line-height: 1.4;
+}
+
+/* Mobile floor picker: five equal columns per design. */
+.ul-3d-building-floors .ul-3d-floor-pills {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.ul-bmap-root {
+  position: relative;
+  width: 100%;
+}
+
+.ul-bmap-image {
+  object-fit: contain;
+}
+
+.ul-bmap-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ul-bmap-floor {
+  fill: transparent;
+  stroke: transparent;
+  cursor: pointer;
+  transition: fill var(--ul-transition);
+}
+
+.ul-bmap-floor-active {
+  fill: var(--ul-building-floor-highlight);
+}
+
+/* ---------- Floor plate ---------- */
+
+.ul-plate-root {
+  position: relative;
+  width: 100%;
+}
+
+.ul-plate-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.ul-plate-slot {
+  outline: none;
+}
+
+.ul-plate-slot-shape {
+  stroke: var(--ul-plate-stroke);
+  stroke-width: 1.5;
+  transition:
+    fill var(--ul-transition),
+    opacity var(--ul-transition);
+}
+
+.ul-plate-slot-available .ul-plate-slot-shape {
+  fill: var(--ul-plate-available);
+}
+
+.ul-plate-slot-notMatching .ul-plate-slot-shape {
+  fill: var(--ul-plate-not-matching);
+}
+
+.ul-plate-slot-unavailable .ul-plate-slot-shape {
+  fill: var(--ul-plate-unavailable);
+}
+
+.ul-plate-slot-interactive {
+  cursor: pointer;
+}
+
+.ul-plate-slot-available:hover .ul-plate-slot-shape,
+.ul-plate-slot-available:focus-visible .ul-plate-slot-shape {
+  fill: var(--ul-plate-available-hover);
+}
+
+.ul-plate-slot-notMatching:hover .ul-plate-slot-shape,
+.ul-plate-slot-notMatching:focus-visible .ul-plate-slot-shape {
+  fill: var(--ul-plate-not-matching-hover);
+}
+
+.ul-plate-slot:focus-visible .ul-plate-slot-shape,
+.ul-plate-slot-selected .ul-plate-slot-shape {
+  stroke: var(--ul-status-available);
+  stroke-width: 4;
+}
+
+.ul-plate-slot-dimmed {
+  opacity: 0.35;
+}
+
+.ul-plate-slot-label {
+  pointer-events: none;
+  font-family: var(--ul-font-family);
+  font-weight: var(--ul-font-weight-medium);
+}
+
+.ul-plate-slot-number {
+  font-size: 14px;
+  fill: var(--ul-plate-label);
+}
+
+.ul-plate-slot-type {
+  font-size: 9px;
+  fill: var(--ul-plate-label-muted);
+}
+
+.ul-plate-slot-available .ul-plate-slot-number {
+  fill: var(--ul-plate-label-available);
+}
+
+.ul-plate-slot-available .ul-plate-slot-type {
+  fill: var(--ul-plate-label-available-muted);
+}
+
+.ul-plate-tooltip {
+  position: absolute;
+  z-index: var(--ul-z-dropdown);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+  border-radius: var(--ul-radius-xs);
+  background-color: var(--ul-pill-bg-active);
+  color: var(--ul-pill-text-active);
+  font-size: var(--ul-font-size-base);
+  line-height: 1.3;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 8px));
+}
+
+.ul-plate-tooltip-title {
+  font-weight: var(--ul-font-weight-medium);
+}
+
+/* ---------- Split layout (floor + unit views) ---------- */
+
+.ul-3d-split {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ul-space-5);
+}
+
+.ul-3d-floor-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ul-space-6);
+}
+
+.ul-3d-floor-stage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ul-space-5);
+}
+
+.ul-3d-filters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ul-space-6);
+}
+
+.ul-3d-field-price {
+  gap: var(--ul-space-2);
+}
+
+.ul-3d-price-values {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--ul-space-2);
+}
+
+.ul-3d-price-value {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.ul-3d-price-value-end {
+  align-items: flex-end;
+}
+
+.ul-3d-price-caption {
+  font-size: var(--ul-font-size-base);
+  font-weight: var(--ul-font-weight-regular);
+  line-height: 1.4;
+}
+
+.ul-3d-clear {
+  align-self: flex-start;
+  font-size: var(--ul-font-size-base);
+  font-weight: var(--ul-font-weight-medium);
+  line-height: 1.4;
+  color: var(--ul-color-text-muted);
+}
+
+.ul-3d-clear:disabled {
+  color: var(--ul-color-text-subtle);
+  cursor: default;
+}
+
+/* ---------- Mobile filters sheet ---------- */
+
+/* The dock (not the bar) is sticky: its containing block is the whole floor view. */
+.ul-3d-sheet-dock {
+  position: sticky;
+  bottom: 0;
+  z-index: var(--ul-z-dropdown);
+}
+
+.ul-3d-sheet-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: calc(100% + 2 * var(--ul-3d-bleed, 20px));
+  margin: 0 calc(-1 * var(--ul-3d-bleed, 20px));
+  padding: 24px var(--ul-3d-bleed, 20px);
+  background-color: var(--ul-pill-bg-hover);
+}
+
+.ul-3d-sheet-bar-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ul-space-2);
+  font-size: var(--ul-font-size-md);
+  font-weight: var(--ul-font-weight-medium);
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.ul-3d-sheet-overlay,
+.ul-3d-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--ul-z-modal);
+  display: flex;
+  background-color: var(--ul-color-overlay);
+}
+
+.ul-3d-sheet-overlay {
+  align-items: flex-end;
+}
+
+.ul-3d-sheet {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: calc(100svh - 20px);
+  border-radius: var(--ul-radius-lg) var(--ul-radius-lg) 0 0;
+  background-color: var(--ul-color-bg);
+}
+
+.ul-3d-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid var(--ul-pill-bg);
+}
+
+.ul-3d-sheet-title {
+  margin: 0;
+  font-size: var(--ul-font-size-md);
+  font-weight: var(--ul-font-weight-medium);
+}
+
+.ul-3d-sheet-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 20px;
+}
+
+.ul-3d-sheet-body .ul-3d-floor-pills {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.ul-3d-sheet-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 24px 20px;
+  background-color: var(--ul-pill-bg-hover);
+}
+
+.ul-3d-sheet-clear,
+.ul-3d-sheet-apply {
+  font-size: var(--ul-font-size-md);
+  font-weight: var(--ul-font-weight-medium);
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.ul-3d-sheet-clear {
+  color: var(--ul-color-text-subtle);
+}
+
+/* ---------- Unit view ---------- */
+
+.ul-3d-unit-plan {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ul-space-6);
+}
+
+.ul-3d-unit-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ul-3d-unit-details {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ul-space-6);
+}
+
+.ul-3d-media {
+  position: relative;
+}
+
+.ul-3d-media-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 3 / 4;
+  color: var(--ul-color-text-muted);
+}
+
+.ul-3d-media-frame {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  max-height: 70svh;
+  margin: 0 auto;
+  cursor: zoom-in;
+}
+
+.ul-3d-media-image {
+  object-fit: contain;
+}
+
+.ul-3d-media-nav {
+  position: absolute;
+  top: 50%;
+  display: inline-flex;
+  padding: 6px;
+  border-radius: var(--ul-radius-pill);
+  transform: translateY(-50%);
+}
+
+.ul-3d-media-prev {
+  left: 0;
+}
+
+.ul-3d-media-next {
+  right: 0;
+}
+
+.ul-3d-lightbox {
+  position: relative;
+  display: flex;
+  width: 100%;
+  margin: auto 0;
+  padding: 56px 16px 16px;
+  background-color: var(--ul-color-surface);
+}
+
+.ul-3d-lightbox-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.ul-3d-lightbox-frame {
+  position: relative;
+  width: 100%;
+  height: 70svh;
+}
+
+.ul-3d-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ul-space-4);
+}
+
+.ul-3d-footer-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ul-space-4);
+  padding: 16px;
+  background-color: var(--ul-pill-bg);
+  font-size: var(--ul-font-size-md);
+  font-weight: var(--ul-font-weight-medium);
+  line-height: 1.4;
+}
+
+.ul-3d-footer-params {
+  display: flex;
+  align-items: center;
+  gap: var(--ul-space-4);
+}
+
+.ul-3d-footer-param {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ul-space-1);
+}
+
+.ul-3d-footer-price {
+  display: inline-flex;
+  gap: var(--ul-space-2);
+  margin: 0;
+  padding: 4px 8px;
+  border-radius: 2px;
+  background-color: var(--ul-color-accent-contrast);
+}
+
+.ul-3d-footer-price-gross {
+  color: var(--ul-color-text-muted);
+}
+
+/* On mobile the actions wrap onto their own row: FLOORPLAN on the left, BOOK TOUR on the right. */
+.ul-3d-footer-actions {
+  display: flex;
+  flex-basis: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ul-space-4);
+}
+
+.ul-3d-footer-action {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ul-space-2);
+  text-decoration: none;
+}
+
+.ul-3d-footer-note {
+  margin: 0;
+  color: var(--ul-color-text-muted);
+  font-size: var(--ul-font-size-md);
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* ---------- Share popup ---------- */
+
+.ul-3d-share-overlay {
+  align-items: flex-end;
+}
+
+.ul-3d-share {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ul-space-5);
+  width: 100%;
+  padding: 32px 20px;
+  border-radius: var(--ul-radius-lg) var(--ul-radius-lg) 0 0;
+  background-color: var(--ul-color-accent-contrast);
+}
+
+.ul-3d-share-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: var(--ul-space-5);
+  border-bottom: 1px solid var(--ul-color-border);
+}
+
+.ul-3d-share-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: var(--ul-font-weight-regular);
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--ul-color-text);
+}
+
+.ul-3d-share-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ul-space-4);
+}
+
+.ul-3d-share-targets {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--ul-space-4);
+}
+
+.ul-3d-share-target {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ul-space-2);
+  font-size: var(--ul-font-size-md);
+  line-height: 1.4;
+  text-decoration: none;
+}
+
+.ul-3d-share-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: var(--ul-pill-bg);
+  transition: background-color var(--ul-transition);
+}
+
+.ul-3d-share-target:hover .ul-3d-share-badge {
+  background-color: var(--ul-pill-bg-hover);
+}
+
+.ul-3d-share-copy {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: var(--ul-space-4);
+  padding: 12px 24px;
+  border-radius: var(--ul-radius-sm);
+  background-color: var(--ul-pill-bg);
+  transition: background-color var(--ul-transition);
+}
+
+.ul-3d-share-copy:hover {
+  background-color: var(--ul-pill-bg-hover);
+}
+
+/* ---------- Desktop ---------- */
+
+@media (min-width: 768px) {
+  .ul-3d-desktop-only {
+    display: block;
+  }
+
+  .ul-3d-mobile-only {
+    display: none;
+  }
+
+  /* Keep flex alignment for controls that are only shown on desktop. */
+  .ul-3d-footer-action.ul-3d-desktop-only,
+  .ul-3d-icon-btn.ul-3d-desktop-only {
+    display: inline-flex;
+  }
+
+  /* Building view: controls on the left, facade centered on the right. */
+  .ul-3d-building {
+    display: grid;
+    grid-template-columns: minmax(240px, 301px) 1fr;
+    gap: var(--ul-space-6);
+    align-items: start;
+  }
+
+  .ul-3d-building-aside {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ul-space-7);
+  }
+
+  .ul-3d-header {
+    margin-bottom: calc(-1 * var(--ul-space-4));
+  }
+
+  .ul-3d-building-floors .ul-3d-floor-pills {
+    display: flex;
+  }
+
+  .ul-3d-building-stage {
+    align-items: center;
+    gap: var(--ul-space-6);
+  }
+
+  .ul-3d-building-hint {
+    display: block;
+  }
+
+  .ul-3d-building-total {
+    display: flex;
+  }
+
+  .ul-3d-building-stage .ul-bmap-root {
+    max-width: 652px;
+  }
+
+  /* Floor + unit views: sidebar | 1px divider | content. */
+  .ul-3d-split {
+    display: grid;
+    grid-template-columns: 266px 1fr;
+    gap: 0;
+    align-items: stretch;
+  }
+
+  .ul-3d-split-aside {
+    padding-right: 40px;
+    border-right: 1px solid var(--ul-pill-bg);
+  }
+
+  .ul-3d-split-main {
+    padding-left: 20px;
+    min-width: 0;
+  }
+
+  .ul-3d-floor-main {
+    justify-content: space-between;
+  }
+
+  .ul-3d-floor-stage {
+    flex: 1;
+    justify-content: center;
+    padding: var(--ul-space-6) 0;
+  }
+
+  .ul-3d-section-pills {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+  }
+
+  .ul-3d-unit {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ul-3d-unit-plan {
+    justify-content: space-between;
+    padding-right: 10px;
+    border-right: 1px solid var(--ul-pill-bg);
+  }
+
+  .ul-3d-unit-details {
+    padding: 56px 0 0 20px;
+    justify-content: space-between;
+  }
+
+  .ul-3d-unit-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  .ul-3d-media {
+    padding: 0 56px;
+  }
+
+  .ul-3d-media-frame {
+    max-height: 610px;
+  }
+
+  .ul-3d-footer-bar {
+    flex-wrap: nowrap;
+    padding: 16px 32px;
+  }
+
+  .ul-3d-footer-actions {
+    flex-basis: auto;
+    justify-content: flex-end;
+  }
+
+  .ul-3d-share-overlay {
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ul-3d-share {
+    width: 393px;
+    border-radius: var(--ul-radius-lg);
+  }
+
+  .ul-3d-lightbox {
+    width: min(90vw, 960px);
+    margin: auto;
+  }
+
+  .ul-3d-lightbox-frame {
+    height: 80svh;
+  }
+}

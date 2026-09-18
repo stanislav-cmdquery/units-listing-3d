@@ -1,0 +1,82 @@
+import type { BuildingConfig, FloorPlate, SlotStatus, UnitLocation } from '../types/building'
+import type { Unit } from '../types/unit'
+
+// The slot is the last two digits plus an optional letter suffix; everything before it is the floor.
+// `304A` -> floor 3, slot `04A`; `1204A` -> floor 12, slot `04A`.
+const UNIT_NUMBER_RE = /^(\d+?)(\d{2}[A-Z]*)$/
+
+export function defaultResolveUnit(unit: Unit): UnitLocation | null {
+  const match = unit.unitNumber.trim().toUpperCase().match(UNIT_NUMBER_RE)
+  if (!match) return null
+  const floor = unit.floor ?? Number(match[1])
+  if (!Number.isFinite(floor)) return null
+  return { floor, slot: match[2] }
+}
+
+export function resolveUnitLocation(config: BuildingConfig, unit: Unit): UnitLocation | null {
+  return (config.resolveUnit ?? defaultResolveUnit)(unit)
+}
+
+export function formatSlotUnitNumber(config: BuildingConfig, floor: number, slot: string): string {
+  return config.formatUnitNumber ? config.formatUnitNumber(floor, slot) : `${floor}${slot}`
+}
+
+export function isUnitAvailable(unit: Unit): boolean {
+  return unit.status == null || unit.status === 'available'
+}
+
+export function getPlateForFloor(config: BuildingConfig, floor: number): FloorPlate | null {
+  return config.plates.find((plate) => plate.floors.includes(floor)) ?? null
+}
+
+/** floor -> slot -> unit. Units that can't be placed on a plate are skipped. */
+export type FloorIndex = Map<number, Map<string, Unit>>
+
+export function buildFloorIndex(config: BuildingConfig, units: Unit[]): FloorIndex {
+  const index: FloorIndex = new Map()
+  for (const unit of units) {
+    const location = resolveUnitLocation(config, unit)
+    if (!location) continue
+    let slots = index.get(location.floor)
+    if (!slots) {
+      slots = new Map()
+      index.set(location.floor, slots)
+    }
+    slots.set(location.slot, unit)
+  }
+  return index
+}
+
+/**
+ * `matchingIds` holds ids of available units that pass the active filters.
+ * A slot without a unit, or with a leased/off-market one, is unavailable.
+ */
+export function getSlotStatus(unit: Unit | undefined, matchingIds: ReadonlySet<string>): SlotStatus {
+  if (!unit || !isUnitAvailable(unit)) return 'unavailable'
+  return matchingIds.has(unit.id) ? 'available' : 'notMatching'
+}
+
+export function countUnitsByFloor(config: BuildingConfig, units: Unit[]): Map<number, number> {
+  const counts = new Map<number, number>()
+  for (const unit of units) {
+    const location = resolveUnitLocation(config, unit)
+    if (!location) continue
+    counts.set(location.floor, (counts.get(location.floor) ?? 0) + 1)
+  }
+  return counts
+}
+
+export function getOrdinal(n: number): string {
+  const tens = n % 100
+  if (tens >= 11 && tens <= 13) return `${n}th`
+  switch (n % 10) {
+    case 1:
+      return `${n}st`
+    case 2:
+      return `${n}nd`
+    case 3:
+      return `${n}rd`
+    default:
+      return `${n}th`
+  }
+}

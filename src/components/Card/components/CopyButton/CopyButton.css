@@ -1,0 +1,19 @@
+.ul-copy-btn-root {
+  cursor: pointer;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-radius: 28px;
+  transition: background-color var(--ul-transition);
+  color: var(--ul-color-price-text);
+}
+
+.ul-copy-btn-root:hover {
+  background-color: rgba(202, 188, 180, 0.6);
+}
+
+.ul-copy-btn-root:active {
+  background-color: rgba(254, 243, 229, 0.8);
+}
