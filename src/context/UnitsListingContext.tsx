@@ -62,8 +62,8 @@ export interface UnitsListingLabels {
   hintAvailable: string
   hintNotMatching: string
   hintNotAvailable: string
-  /** Building view hint for the hovered floor; `{floor}` -> "3rd", `{count}` -> available units. */
-  floorHint: string
+  /** Label next to the hovered floor on the facade; `{floor}` -> "3rd". */
+  floorLabel: string
 }
 
 export const defaultLabels: UnitsListingLabels = {
@@ -118,7 +118,7 @@ export const defaultLabels: UnitsListingLabels = {
   hintAvailable: 'Available. Click to see more details.',
   hintNotMatching: 'Not matching. Try adjusting your\nfilters to see more options.',
   hintNotAvailable: 'At the moment is not available.\nTry to choose other apartment',
-  floorHint: '{floor} floor — {count} available',
+  floorLabel: '{floor} Floor',
 }
 
 export interface UnitsListingConfig {

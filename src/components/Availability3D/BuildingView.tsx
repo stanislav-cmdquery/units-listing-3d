@@ -1,5 +1,6 @@
 'use client'
 
+import clsx from 'clsx'
 import { useState, type ReactNode } from 'react'
 
 import { useUnitsListingConfig } from '../../context/UnitsListingContext'
@@ -19,12 +20,8 @@ export function BuildingView({ model, header, viewToggle, onSelectFloor }: Props
   const { labels } = useUnitsListingConfig()
   const [hoveredFloor, setHoveredFloor] = useState<number | null>(null)
 
-  const hint =
-    hoveredFloor != null
-      ? labels.floorHint
-          .replace('{floor}', getOrdinal(hoveredFloor))
-          .replace('{count}', String(model.availableByFloor.get(hoveredFloor) ?? 0))
-      : labels.hoverToSelectFloor
+  // Hovering a floor narrows the counter to that floor; the facade label names the floor.
+  const available = hoveredFloor != null ? (model.availableByFloor.get(hoveredFloor) ?? 0) : model.totalAvailable
 
   return (
     <div className="ul-3d-building">
@@ -50,8 +47,9 @@ export function BuildingView({ model, header, viewToggle, onSelectFloor }: Props
       </div>
 
       <div className="ul-3d-building-stage">
-        <p className="ul-3d-chip ul-3d-building-hint" aria-live="polite">
-          {hint}
+        {/* Hidden (not removed) while a floor is hovered so the facade doesn't jump. */}
+        <p className={clsx('ul-3d-chip ul-3d-building-hint', hoveredFloor != null && 'ul-3d-building-hint-hidden')}>
+          {labels.hoverToSelectFloor}
         </p>
         <div className="ul-3d-building-map">
           <BuildingMap
@@ -61,9 +59,9 @@ export function BuildingView({ model, header, viewToggle, onSelectFloor }: Props
             onSelect={onSelectFloor}
           />
         </div>
-        <p className="ul-3d-building-total">
+        <p className="ul-3d-building-total" aria-live="polite">
           <span className="ul-legend-dot ul-legend-dot-available" aria-hidden="true" />
-          {model.totalAvailable} {labels.availableApartments}
+          {available} {labels.availableApartments}
         </p>
       </div>
     </div>

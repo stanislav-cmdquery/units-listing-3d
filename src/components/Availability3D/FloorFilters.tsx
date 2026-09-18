@@ -3,9 +3,9 @@
 import { useUnitsListingConfig } from '../../context/UnitsListingContext'
 import { Pills } from '../../ui/Pills'
 import { RangeSlider } from '../../ui/RangeSlider'
-import { formatUSD } from '../../utils/formatPrice'
 import type { UnitsFilter } from '../Grid/UnitsGrid'
 import type { BuildingModel } from './model'
+import { PriceInput } from './PriceInput'
 
 type Props = {
   model: BuildingModel
@@ -116,14 +116,17 @@ export function FloorFilters({
             ariaLabelMax={labels.maximum}
           />
           <div className="ul-3d-price-values">
-            <div className="ul-3d-price-value">
-              <span className="ul-3d-price-caption">{labels.minimum}</span>
-              <span className="ul-pill">{formatUSD(priceLow)}</span>
-            </div>
-            <div className="ul-3d-price-value ul-3d-price-value-end">
-              <span className="ul-3d-price-caption">{labels.maximum}</span>
-              <span className="ul-pill">{formatUSD(priceHigh)}</span>
-            </div>
+            <PriceInput
+              label={labels.minimum}
+              value={priceLow}
+              onCommit={(v) => handlePriceChange([Math.min(Math.max(v, priceBounds.min), priceHigh), priceHigh])}
+            />
+            <PriceInput
+              label={labels.maximum}
+              value={priceHigh}
+              align="end"
+              onCommit={(v) => handlePriceChange([priceLow, Math.max(Math.min(v, priceBounds.max), priceLow)])}
+            />
           </div>
         </div>
       )}

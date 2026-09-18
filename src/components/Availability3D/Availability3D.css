@@ -32,10 +32,37 @@
 }
 
 .ul-3d-link {
+  position: relative;
   font-size: var(--ul-font-size-md);
   font-weight: var(--ul-font-weight-medium);
   line-height: 1.4;
   text-transform: uppercase;
+}
+
+/* Link underline per design: grows from the left on hover, retracts to the right on leave. */
+.ul-3d-link::after,
+.ul-3d-clear::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--ul-transition-slow);
+}
+
+.ul-3d-link:hover::after,
+:is(.ul-3d-back, .ul-3d-footer-action, .ul-3d-share-copy):hover .ul-3d-link::after,
+.ul-3d-clear:hover:not(:disabled)::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+:is(.ul-3d-back, .ul-3d-footer-action):active {
+  color: var(--ul-link-pressed);
 }
 
 .ul-3d-chip {
@@ -167,6 +194,10 @@
   display: none;
 }
 
+.ul-3d-building-hint-hidden {
+  visibility: hidden;
+}
+
 .ul-3d-building-total {
   align-items: center;
   justify-content: center;
@@ -183,11 +214,29 @@
   grid-template-columns: repeat(5, 1fr);
 }
 
+.ul-3d-building-map {
+  display: flex;
+  justify-content: center;
+}
+
+/* The box keeps the render's exact ratio, so % offsets (floor label) match the picture. */
 .ul-bmap-root {
   position: relative;
-  width: 100%;
-  /* Image (object-fit: contain) and SVG (meet) scale the same way, so the bands stay aligned in any box. */
-  max-height: 60lvh;
+  width: min(100%, calc(60lvh * var(--ul-bmap-ratio)));
+  aspect-ratio: var(--ul-bmap-ratio);
+}
+
+.ul-bmap-label {
+  position: absolute;
+  padding: 4px 12px;
+  background-color: var(--ul-building-floor-label-bg);
+  color: var(--ul-building-floor-label-text);
+  font-size: var(--ul-font-size-md);
+  font-weight: var(--ul-font-weight-medium);
+  line-height: 1.4;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translateY(-50%);
 }
 
 .ul-bmap-image {
@@ -361,6 +410,19 @@
   align-items: flex-end;
 }
 
+.ul-3d-price-input {
+  width: 110px;
+  border: 1px solid transparent;
+  outline: none;
+  text-align: center;
+  cursor: text;
+}
+
+.ul-3d-price-input:focus {
+  border-color: var(--ul-pill-bg-active);
+  background-color: var(--ul-3d-surface);
+}
+
 .ul-3d-price-caption {
   font-size: var(--ul-font-size-base);
   font-weight: var(--ul-font-weight-regular);
@@ -368,15 +430,19 @@
 }
 
 .ul-3d-clear {
+  position: relative;
   align-self: flex-start;
   font-size: var(--ul-font-size-base);
   font-weight: var(--ul-font-weight-medium);
   line-height: 1.4;
-  color: var(--ul-color-text-muted);
+  color: var(--ul-clear-text);
+}
+
+.ul-3d-clear:active:not(:disabled) {
+  color: var(--ul-clear-pressed);
 }
 
 .ul-3d-clear:disabled {
-  color: var(--ul-color-text-subtle);
   cursor: default;
 }
 
@@ -770,18 +836,14 @@
   }
 
   .ul-3d-building-map {
-    display: flex;
-    justify-content: center;
     flex: 1 1 0;
     width: 100%;
     min-height: 0;
+    container-type: size;
   }
 
   .ul-3d-building-map .ul-bmap-root {
-    width: auto;
-    height: 100%;
-    max-width: 100%;
-    max-height: none;
+    width: min(100cqw, calc(100cqh * var(--ul-bmap-ratio)));
   }
 
   .ul-3d-building-hint {
@@ -805,6 +867,22 @@
     border-right: 1px solid var(--ul-pill-bg);
     min-height: 0;
     overflow-y: auto;
+  }
+
+  /* Fade at the bottom of the scrolling filters, so it's clear the list continues. */
+  .ul-3d-split-aside::after {
+    content: '';
+    position: sticky;
+    bottom: 0;
+    display: block;
+    height: 48px;
+    margin-top: -48px;
+    background: linear-gradient(to bottom, transparent, var(--ul-3d-surface));
+    pointer-events: none;
+  }
+
+  .ul-3d-split-aside .ul-3d-filters {
+    padding-bottom: 48px;
   }
 
   .ul-3d-split-main {
