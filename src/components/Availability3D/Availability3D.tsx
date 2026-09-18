@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, type ReactNode } from 'react'
 
 import { useUnitsListingConfig } from '../../context/UnitsListingContext'
 import type { BuildingConfig } from '../../types/building'
@@ -87,6 +87,36 @@ export function Availability3D({
   const selectFloor = (next: number) => setNav({ floor: next, unit: null }, { push: true })
   const selectUnit = (unitNumber: string) => setNav({ unit: unitNumber }, { push: nav.unit == null })
 
+  const step = unit && plate ? 'unit' : floor != null ? 'floor' : 'building'
+
+  const backToFloor = () => setNav({ unit: null }, { push: true })
+  const backToBuilding = () => setNav({ floor: null, unit: null }, { push: true })
+
+  // Coming back to the building starts a fresh search: filters picked on the floor no longer apply.
+  const prevStepRef = useRef(step)
+  const clearFiltersRef = useRef(filter.clearAll)
+  clearFiltersRef.current = filter.clearAll
+  useEffect(() => {
+    if (step === 'building' && prevStepRef.current !== 'building') clearFiltersRef.current()
+    prevStepRef.current = step
+  }, [step])
+
+  // Escape acts like the "Return to ..." link of the current step. Registered once on mount, so it runs
+  // before any overlay's own Escape handler and can see that a dialog is still open.
+  const escapeRef = useRef<(() => void) | null>(null)
+  escapeRef.current = step === 'unit' ? backToFloor : step === 'floor' ? backToBuilding : null
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape' || e.defaultPrevented || !escapeRef.current) return
+      if (document.querySelector('[aria-modal="true"]')) return
+      const target = e.target as HTMLElement | null
+      if (target?.closest('input, textarea, select, [contenteditable="true"]')) return
+      escapeRef.current()
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [])
+
   if (isError) {
     return (
       <div className="ul-grid-error">
@@ -101,7 +131,6 @@ export function Availability3D({
     )
   }
 
-  const step = unit && plate ? 'unit' : floor != null ? 'floor' : 'building'
   const MotionDiv = motion.div
   const AnimatePresence = motion.AnimatePresence
 
@@ -123,7 +152,7 @@ export function Availability3D({
               unit={unit}
               getShareUrl={getShareUrl}
               onSelectUnit={selectUnit}
-              onBack={() => setNav({ unit: null }, { push: true })}
+              onBack={backToFloor}
             />
           ) : step === 'floor' && floor != null ? (
             <FloorView
@@ -134,7 +163,7 @@ export function Availability3D({
               onFloorChange={(next) => setNav({ floor: next, unit: null })}
               onSectionChange={(section) => setNav({ section })}
               onSelectUnit={selectUnit}
-              onBack={() => setNav({ floor: null, unit: null }, { push: true })}
+              onBack={backToBuilding}
             />
           ) : (
             <BuildingView model={model} header={header} viewToggle={viewToggle} onSelectFloor={selectFloor} />

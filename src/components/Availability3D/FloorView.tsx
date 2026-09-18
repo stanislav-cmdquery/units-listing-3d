@@ -10,6 +10,7 @@ import { FiltersSheet } from './FiltersSheet'
 import { FloorFilters } from './FloorFilters'
 import { FloorPlateMap } from './FloorPlateMap'
 import type { BuildingModel } from './model'
+import { PlatePan } from './PlatePan'
 import { StatusLegend } from './StatusLegend'
 
 type Props = {
@@ -37,11 +38,11 @@ export function FloorView({
   const isDesktop = useMediaQuery(DESKTOP_QUERY)
   const plate = getPlateForFloor(model.building, floor)
   const { sections } = model.building
-  // Mobile always shows a single section of the plate; default to the first one.
+  // Mobile pans the plate to one section at a time; default to the first one.
   const mobileSection = section ?? sections[0]?.id ?? null
 
   return (
-    <div className="ul-3d-split">
+    <div className="ul-3d-split ul-3d-floor">
       <aside className="ul-3d-split-aside ul-3d-desktop-only">
         <FloorFilters
           model={model}
@@ -62,6 +63,7 @@ export function FloorView({
             <Pills
               label={labels.selectBuilding}
               scroll
+              className="ul-3d-bleed-scroll"
               options={sections.map((s) => ({ value: s.id, label: s.label }))}
               value={mobileSection}
               onChange={onSectionChange}
@@ -70,13 +72,21 @@ export function FloorView({
         )}
 
         <div className="ul-3d-floor-stage">
-          {plate ? (
+          {plate && isDesktop ? (
             <FloorPlateMap
               model={model}
               plate={plate}
               floor={floor}
-              activeSection={isDesktop ? section : null}
-              cropSection={isDesktop ? null : mobileSection}
+              activeSection={section}
+              onSelectUnit={onSelectUnit}
+            />
+          ) : plate ? (
+            <PlatePan
+              model={model}
+              plate={plate}
+              floor={floor}
+              section={mobileSection}
+              onSectionChange={onSectionChange}
               onSelectUnit={onSelectUnit}
             />
           ) : (

@@ -16,8 +16,6 @@ type Props = {
   selectedUnit?: string | null
   /** Section to emphasize; slots of other sections are dimmed. */
   activeSection?: string | null
-  /** Crop the plate to this section's viewBox (mobile). */
-  cropSection?: string | null
   onSelectUnit: (unitNumber: string) => void
   className?: string
 }
@@ -35,7 +33,6 @@ export function FloorPlateMap({
   floor,
   selectedUnit,
   activeSection,
-  cropSection,
   onSelectUnit,
   className,
 }: Props) {
@@ -47,7 +44,6 @@ export function FloorPlateMap({
   const slotUnits = model.floorIndex.get(floor)
   const Base = plate.Base
 
-  const viewBox = (cropSection && model.building.sections.find((s) => s.id === cropSection)?.viewBox) || plate.viewBox
 
   const statusLabels: Record<SlotStatus, string> = {
     available: labels.statusAvailable,
@@ -85,7 +81,7 @@ export function FloorPlateMap({
 
   return (
     <div ref={rootRef} className={clsx('ul-plate-root', className)}>
-      <svg className="ul-plate-svg" viewBox={viewBox} role="group" aria-label={`${getOrdinal(floor)} ${labels.floorSuffix}`}>
+      <svg className="ul-plate-svg" viewBox={plate.viewBox} role="group" aria-label={`${getOrdinal(floor)} ${labels.floorSuffix}`}>
         <Base />
         {plate.slots.map((slot) => {
           const unit: Unit | undefined = slotUnits?.get(slot.slot)

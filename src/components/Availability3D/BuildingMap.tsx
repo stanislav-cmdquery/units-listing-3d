@@ -19,7 +19,7 @@ export function BuildingMap({ building, activeFloor, onHover, onSelect }: Props)
   const { ImageComponent, labels } = useUnitsListingConfig()
   const box = parseViewBox(building.viewBox)
 
-  // The floor label sits just right of the building, level with the floor band.
+  // The floor label sits just right of the building, its bottom aligned with the floor band's bottom edge.
   const labelPositions = useMemo(() => {
     const positions = new Map<number, { left: string; top: string }>()
     for (const { floor, d } of building.floors) {
@@ -27,7 +27,7 @@ export function BuildingMap({ building, activeFloor, onHover, onSelect }: Props)
       if (!bounds) continue
       positions.set(floor, {
         left: `${((bounds.maxX - box.x) / box.width) * 100}%`,
-        top: `${(((bounds.minY + bounds.maxY) / 2 - box.y) / box.height) * 100}%`,
+        top: `${((bounds.maxY - box.y) / box.height) * 100}%`,
       })
     }
     return positions

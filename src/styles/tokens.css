@@ -53,6 +53,10 @@
   --ul-link-pressed: #605754;
   --ul-clear-text: #605754;
   --ul-clear-pressed: #a39e9d;
+  --ul-sheet-bg: #f4f1ed;
+  --ul-sheet-divider: #dcd3c8;
+  --ul-sheet-clear-text: #a48d70;
+  --ul-footer-note-text: #605754;
   /* Radii */
   --ul-radius-xs: 4px;
   --ul-radius-sm: 8px;

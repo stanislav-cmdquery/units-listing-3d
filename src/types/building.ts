@@ -12,7 +12,10 @@ export interface BuildingFloor {
 export interface BuildingSection {
   id: string
   label: string
-  /** Crop of the floor plate used on mobile, where only one section is shown at a time. */
+  /**
+   * This section's area on the floor plate, in `FloorPlate.viewBox` coordinates. On mobile the plate is
+   * scaled so the widest section fills the screen, and the pan centers the picked section.
+   */
   viewBox?: string
 }
 

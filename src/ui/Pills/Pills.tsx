@@ -52,7 +52,11 @@ export function Pills<T extends string | number>({
             aria-pressed={active}
             aria-label={option.ariaLabel}
             disabled={option.disabled}
-            onClick={() => onChange(option.value)}
+            onClick={(e) => {
+              // In a scrolling row, bring a partly hidden pill fully on screen.
+              if (scroll) e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' })
+              onChange(option.value)
+            }}
             onMouseEnter={onHover ? () => onHover(option.value) : undefined}
             onFocus={onHover ? () => onHover(option.value) : undefined}
             onBlur={onHover ? () => onHover(null) : undefined}

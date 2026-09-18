@@ -189,7 +189,7 @@ A complete, working example is the Luma Living config: `features/availability/bu
 | One vector drawing per *typical* floor plate | `building.plates` | Floors with an identical layout share a plate. Unit outlines must be separate vectors; unit number/type labels as text frames. |
 | Unit numbering scheme | `resolveUnit` | How a unit number from the data maps to floor + position (e.g. `304A` = floor 3, slot `04A`). |
 | Building sections (optional) | `building.sections` | When several buildings/wings share a plate (Luma: 362/370/372 Livingston). |
-| Mobile designs | `sections[].viewBox` | Which part of the plate is shown on a phone. |
+| Mobile designs | `sections[].viewBox` | Each building's area on the plate. On a phone the plate is scaled so the widest section fills the screen and can be dragged sideways; picking a building pans to its area. |
 
 #### 2. Extract the geometry from Figma
 
@@ -287,7 +287,7 @@ export const BUILDING: BuildingConfig = {
   viewBox: '0 0 652 715',       // the render frame size in design pixels — the space of floors[].d
   floors: BUILDING_FLOORS,
   sections: [
-    // Order = order of the building pills. viewBox crops the plate to this section on mobile.
+    // Order = order of the building pills. viewBox = this section's area on the plate (mobile pan).
     { id: 'C', label: '362 Livingston', viewBox: '25 28 360 255' },
     { id: 'B', label: '370 Livingston', viewBox: '372 28 305 255' },
   ],
@@ -399,6 +399,11 @@ typed subset):
 | `--ul-link-pressed` | `#605754` | Pressed state of text links (Return to…, Book Tour) |
 | `--ul-clear-text` / `--ul-clear-pressed` | `#605754` / `#a39e9d` | Clear Filters link |
 | `--ul-3d-height` | `80lvh` | Desktop height of every 3D step. Set it to the viewport height left under your header (e.g. `calc(100lvh - 98px - 20px)`) so each step fits one screen |
+| `--ul-3d-mobile-height` | `100svh` | Mobile height of the floor step: the plate scales down to fit it. Set it to the viewport height minus your section padding |
+| `--ul-3d-bleed` | `20px` | Mobile side gutter of your section; the filters bar and the Select Building row extend into it to reach the screen edges |
+| `--ul-sheet-bg` / `--ul-sheet-divider` | `#f4f1ed` / `#dcd3c8` | Mobile filters sheet background; header rule and footer background |
+| `--ul-sheet-clear-text` | `#a48d70` | Clear Filters in the mobile filters sheet |
+| `--ul-footer-note-text` | `#605754` | Net effective note under the unit footer (mobile) |
 
 Every string is in `labels` (`selectFloor`, `hoverToSelectFloor`, `availableApartments`, `statusAvailable`,
 `hintAvailable`, `hintNotMatching`, `hintNotAvailable`, `floorLabel`, `shareTitle`, `netEffectiveNote`, …). Hints use `\n` for line
@@ -414,7 +419,7 @@ the `ul-` CSS prefix of `@cmdquery/units-listing`, so don't render both packages
 - [ ] Each unit number in the data resolves to an existing slot (log units where `resolveUnit` returns `null` or the slot
       is missing on the plate).
 - [ ] Slot type labels match the data's bed counts.
-- [ ] Mobile: each section `viewBox` shows its whole building without clipping.
+- [ ] Mobile: each section `viewBox` covers its whole building, so tapping its pill centers the right part of the plate.
 - [ ] Deep link `?view=3d&floor=N&unit=X` opens the unit; browser back returns to the floor, then the building.
 
 #### Limitations
