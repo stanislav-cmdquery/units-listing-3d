@@ -44,6 +44,8 @@
   --ul-plate-label-muted: #a39e9d;
   --ul-plate-label-available: #363928;
   --ul-plate-label-available-muted: #7d845d;
+  --ul-plate-tooltip-bg: #1f1917;
+  --ul-plate-tooltip-text: #e9e6e2;
   --ul-building-floor-highlight: rgba(143, 185, 125, 0.8);
   /* Radii */
   --ul-radius-xs: 4px;

@@ -58,6 +58,10 @@ export interface UnitsListingLabels {
   /** `{concession}` -> e.g. "1-month", `{term}` -> lease term in months. */
   netEffectiveNote: string
   netEffectiveNoteNoTerm: string
+  /** Floor plate hover hints; `\n` breaks the line as in the design. */
+  hintAvailable: string
+  hintNotMatching: string
+  hintNotAvailable: string
 }
 
 export const defaultLabels: UnitsListingLabels = {
@@ -109,6 +113,9 @@ export const defaultLabels: UnitsListingLabels = {
   next: 'Next',
   netEffectiveNote: '*Net effective cost with {concession} free when you sign a {term}-month lease',
   netEffectiveNoteNoTerm: '*Net effective cost with {concession} free',
+  hintAvailable: 'Available. Click to see more details.',
+  hintNotMatching: 'Not matching. Try adjusting your\nfilters to see more options.',
+  hintNotAvailable: 'At the moment is not available.\nTry to choose other apartment',
 }
 
 export interface UnitsListingConfig {

@@ -1,6 +1,6 @@
 {
   "name": "@cmdquery/units-listing-3d",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Themeable units listing UI component with 3D building, floor plate and unit views",
   "type": "module",
   "sideEffects": [
@@ -60,7 +60,7 @@
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
   "repository": {
     "type": "git",
-    "url": "https://github.com/stanislav-cmdquery/units-listing-3d.git"
+    "url": "git+https://github.com/stanislav-cmdquery/units-listing-3d.git"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"

@@ -1,10 +1,10 @@
 'use client'
 
 import clsx from 'clsx'
-import { useRef, useState, type KeyboardEvent } from 'react'
+import { useRef, useState, type FocusEvent, type KeyboardEvent, type PointerEvent } from 'react'
 
 import { useUnitsListingConfig } from '../../context/UnitsListingContext'
-import type { FloorPlate, FloorPlateSlot, SlotStatus } from '../../types/building'
+import type { FloorPlate, SlotStatus } from '../../types/building'
 import type { Unit } from '../../types/unit'
 import { formatSlotUnitNumber, getOrdinal, getSlotStatus } from '../../utils/building'
 import type { BuildingModel } from './model'
@@ -22,7 +22,8 @@ type Props = {
   className?: string
 }
 
-type Tooltip = { slot: FloorPlateSlot; unitNumber: string; x: number; y: number }
+/** Anchor point in root coordinates: the pointer, or the slot's top-center for keyboard focus. */
+type Tooltip = { status: SlotStatus; x: number; y: number }
 
 // Label block geometry in plate units: the number sits on top, the unit type below it.
 const NUMBER_BASELINE = 15
@@ -52,12 +53,26 @@ export function FloorPlateMap({
     unavailable: labels.statusNotAvailable,
   }
 
-  const showTooltip = (slot: FloorPlateSlot, unitNumber: string, target: SVGElement) => {
-    const root = rootRef.current
-    if (!root) return
-    const rootRect = root.getBoundingClientRect()
-    const rect = target.getBoundingClientRect()
-    setTooltip({ slot, unitNumber, x: rect.left + rect.width / 2 - rootRect.left, y: rect.top - rootRect.top })
+  const hints: Record<SlotStatus, string> = {
+    available: labels.hintAvailable,
+    notMatching: labels.hintNotMatching,
+    unavailable: labels.hintNotAvailable,
+  }
+
+  const toRootPoint = (clientX: number, clientY: number) => {
+    const rect = rootRef.current?.getBoundingClientRect()
+    return rect ? { x: clientX - rect.left, y: clientY - rect.top } : null
+  }
+
+  const followPointer = (status: SlotStatus, e: PointerEvent) => {
+    const point = toRootPoint(e.clientX, e.clientY)
+    if (point) setTooltip({ status, ...point })
+  }
+
+  const anchorToSlot = (status: SlotStatus, e: FocusEvent<SVGElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const point = toRootPoint(rect.left + rect.width / 2, rect.top)
+    if (point) setTooltip({ status, ...point })
   }
 
   return (
@@ -96,10 +111,10 @@ export function FloorPlateMap({
               aria-pressed={interactive ? selected : undefined}
               onClick={activate}
               onKeyDown={interactive ? onKeyDown : undefined}
-              onMouseEnter={status === 'unavailable' ? (e) => showTooltip(slot, unitNumber, e.currentTarget) : undefined}
-              onMouseLeave={status === 'unavailable' ? () => setTooltip(null) : undefined}
-              onFocus={status === 'unavailable' ? (e) => showTooltip(slot, unitNumber, e.currentTarget) : undefined}
-              onBlur={status === 'unavailable' ? () => setTooltip(null) : undefined}
+              onPointerMove={(e) => followPointer(status, e)}
+              onPointerLeave={() => setTooltip(null)}
+              onFocus={(e) => anchorToSlot(status, e)}
+              onBlur={() => setTooltip(null)}
             >
               <path className="ul-plate-slot-shape" d={slot.d} />
               <g
@@ -121,10 +136,7 @@ export function FloorPlateMap({
 
       {tooltip && (
         <div className="ul-plate-tooltip" role="tooltip" style={{ left: tooltip.x, top: tooltip.y }}>
-          <span className="ul-plate-tooltip-title">
-            {tooltip.unitNumber} · {tooltip.slot.typeLabel}
-          </span>
-          <span>{labels.statusNotAvailable}</span>
+          {hints[tooltip.status]}
         </div>
       )}
     </div>
