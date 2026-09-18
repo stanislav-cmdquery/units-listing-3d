@@ -13,6 +13,11 @@
   margin-bottom: var(--ul-space-5);
 }
 
+/* The toggle sits in flex columns; keep it as wide as its buttons. */
+.ul-3d-root .ul-view-toggle-root {
+  align-self: flex-start;
+}
+
 .ul-3d-field {
   display: flex;
   flex-direction: column;
@@ -181,6 +186,8 @@
 .ul-bmap-root {
   position: relative;
   width: 100%;
+  /* Image (object-fit: contain) and SVG (meet) scale the same way, so the bands stay aligned in any box. */
+  max-height: 60lvh;
 }
 
 .ul-bmap-image {
@@ -257,10 +264,11 @@
   fill: var(--ul-plate-not-matching-hover);
 }
 
-.ul-plate-slot:focus-visible .ul-plate-slot-shape,
-.ul-plate-slot-selected .ul-plate-slot-shape {
+.ul-plate-slot-outline {
+  fill: none;
   stroke: var(--ul-status-available);
   stroke-width: 4;
+  pointer-events: none;
 }
 
 .ul-plate-slot-dimmed {
@@ -722,18 +730,29 @@
     display: inline-flex;
   }
 
+  /* Every step fits one screen: the consumer sets --ul-3d-height to the space left under its header. */
+  .ul-3d-root {
+    height: var(--ul-3d-height, 80lvh);
+  }
+
+  .ul-3d-root > * {
+    height: 100%;
+  }
+
   /* Building view: controls on the left, facade centered on the right. */
   .ul-3d-building {
     display: grid;
     grid-template-columns: minmax(240px, 301px) 1fr;
     gap: var(--ul-space-6);
-    align-items: start;
+    height: 100%;
   }
 
   .ul-3d-building-aside {
     display: flex;
     flex-direction: column;
     gap: var(--ul-space-7);
+    min-height: 0;
+    overflow-y: auto;
   }
 
   .ul-3d-header {
@@ -746,7 +765,23 @@
 
   .ul-3d-building-stage {
     align-items: center;
-    gap: var(--ul-space-6);
+    gap: var(--ul-space-5);
+    min-height: 0;
+  }
+
+  .ul-3d-building-map {
+    display: flex;
+    justify-content: center;
+    flex: 1 1 0;
+    width: 100%;
+    min-height: 0;
+  }
+
+  .ul-3d-building-map .ul-bmap-root {
+    width: auto;
+    height: 100%;
+    max-width: 100%;
+    max-height: none;
   }
 
   .ul-3d-building-hint {
@@ -757,26 +792,25 @@
     display: flex;
   }
 
-  .ul-3d-building-stage .ul-bmap-root {
-    max-width: 652px;
-  }
-
   /* Floor + unit views: sidebar | 1px divider | content. */
   .ul-3d-split {
     display: grid;
     grid-template-columns: 266px 1fr;
     gap: 0;
-    align-items: stretch;
+    height: 100%;
   }
 
   .ul-3d-split-aside {
     padding-right: 40px;
     border-right: 1px solid var(--ul-pill-bg);
+    min-height: 0;
+    overflow-y: auto;
   }
 
   .ul-3d-split-main {
     padding-left: 20px;
     min-width: 0;
+    min-height: 0;
   }
 
   .ul-3d-floor-main {
@@ -784,9 +818,14 @@
   }
 
   .ul-3d-floor-stage {
-    flex: 1;
+    flex: 1 1 0;
+    min-height: 0;
     justify-content: center;
-    padding: var(--ul-space-6) 0;
+  }
+
+  .ul-3d-floor-stage .ul-plate-svg,
+  .ul-3d-unit-plate .ul-plate-svg {
+    max-height: 100%;
   }
 
   .ul-3d-section-pills {
@@ -800,13 +839,15 @@
 
   .ul-3d-unit-plan {
     justify-content: space-between;
+    min-height: 0;
     padding-right: 10px;
     border-right: 1px solid var(--ul-pill-bg);
   }
 
   .ul-3d-unit-details {
-    padding: 56px 0 0 20px;
-    justify-content: space-between;
+    min-height: 0;
+    padding: 48px 0 0 20px;
+    gap: var(--ul-space-5);
   }
 
   .ul-3d-unit-close {
@@ -816,11 +857,15 @@
   }
 
   .ul-3d-media {
+    flex: 1 1 0;
+    min-height: 0;
     padding: 0 56px;
   }
 
   .ul-3d-media-frame {
-    max-height: 610px;
+    height: 100%;
+    max-height: none;
+    aspect-ratio: auto;
   }
 
   .ul-3d-footer-bar {

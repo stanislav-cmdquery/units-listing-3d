@@ -42,6 +42,8 @@ export function FloorPlateMap({
   const { labels } = useUnitsListingConfig()
   const rootRef = useRef<HTMLDivElement>(null)
   const [tooltip, setTooltip] = useState<Tooltip | null>(null)
+  // Keyboard-focused slot; its outline is drawn on top like the selected one.
+  const [focusedSlot, setFocusedSlot] = useState<string | null>(null)
   const slotUnits = model.floorIndex.get(floor)
   const Base = plate.Base
 
@@ -51,6 +53,12 @@ export function FloorPlateMap({
     available: labels.statusAvailable,
     notMatching: labels.statusNotMatching,
     unavailable: labels.statusNotAvailable,
+  }
+
+  const isSelected = (slotId: string) => {
+    if (selectedUnit == null) return false
+    const unitNumber = slotUnits?.get(slotId)?.unitNumber ?? formatSlotUnitNumber(model.building, floor, slotId)
+    return unitNumber === selectedUnit
   }
 
   const hints: Record<SlotStatus, string> = {
@@ -113,8 +121,14 @@ export function FloorPlateMap({
               onKeyDown={interactive ? onKeyDown : undefined}
               onPointerMove={(e) => followPointer(status, e)}
               onPointerLeave={() => setTooltip(null)}
-              onFocus={(e) => anchorToSlot(status, e)}
-              onBlur={() => setTooltip(null)}
+              onFocus={(e) => {
+                anchorToSlot(status, e)
+                if (e.currentTarget.matches(':focus-visible')) setFocusedSlot(slot.slot)
+              }}
+              onBlur={() => {
+                setTooltip(null)
+                setFocusedSlot(null)
+              }}
             >
               <path className="ul-plate-slot-shape" d={slot.d} />
               <g
@@ -132,6 +146,12 @@ export function FloorPlateMap({
             </g>
           )
         })}
+        {/* Outlines go last: a stroke on the slot itself is partly covered by the neighbours painted after it. */}
+        {plate.slots
+          .filter((slot) => slot.slot === focusedSlot || isSelected(slot.slot))
+          .map((slot) => (
+            <path key={slot.slot} className="ul-plate-slot-outline" d={slot.d} aria-hidden="true" />
+          ))}
       </svg>
 
       {tooltip && (

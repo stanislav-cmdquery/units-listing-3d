@@ -21,7 +21,9 @@ export function BuildingView({ model, header, viewToggle, onSelectFloor }: Props
 
   const hint =
     hoveredFloor != null
-      ? `${getOrdinal(hoveredFloor)} ${labels.floorSuffix} · ${model.availableByFloor.get(hoveredFloor) ?? 0} ${labels.statusAvailable.toLowerCase()}`
+      ? labels.floorHint
+          .replace('{floor}', getOrdinal(hoveredFloor))
+          .replace('{count}', String(model.availableByFloor.get(hoveredFloor) ?? 0))
       : labels.hoverToSelectFloor
 
   return (
@@ -51,12 +53,14 @@ export function BuildingView({ model, header, viewToggle, onSelectFloor }: Props
         <p className="ul-3d-chip ul-3d-building-hint" aria-live="polite">
           {hint}
         </p>
-        <BuildingMap
-          building={model.building}
-          activeFloor={hoveredFloor}
-          onHover={setHoveredFloor}
-          onSelect={onSelectFloor}
-        />
+        <div className="ul-3d-building-map">
+          <BuildingMap
+            building={model.building}
+            activeFloor={hoveredFloor}
+            onHover={setHoveredFloor}
+            onSelect={onSelectFloor}
+          />
+        </div>
         <p className="ul-3d-building-total">
           <span className="ul-legend-dot ul-legend-dot-available" aria-hidden="true" />
           {model.totalAvailable} {labels.availableApartments}
