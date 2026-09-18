@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import type { BuildingConfig } from '../types/building'
+import type { BuildingConfig, FloorPlateSlot } from '../types/building'
 import type { Unit } from '../types/unit'
 import {
   buildFloorIndex,
@@ -11,10 +11,15 @@ import {
   getPlateForFloor,
   getSlotStatus,
   isUnitAvailable,
+  placeUnit,
 } from './building'
 
 function unit(partial: Partial<Unit> & { id: string; unitNumber: string }): Unit {
   return { beds: 1, baths: 1, price: { net: 2000, gross: 2000 }, ...partial }
+}
+
+function slot(id: string): FloorPlateSlot {
+  return { slot: id, section: id.slice(-1), d: 'M0 0H1V1Z', labelX: 0, labelY: 0, typeLabel: '1-Bed' }
 }
 
 const config: BuildingConfig = {
@@ -23,8 +28,8 @@ const config: BuildingConfig = {
   floors: [],
   sections: [],
   plates: [
-    { id: 'low', floors: [1, 2, 3], viewBox: '0 0 10 10', Base: () => null, slots: [] },
-    { id: 'high', floors: [16, 17], viewBox: '0 0 10 10', Base: () => null, slots: [] },
+    { id: 'low', floors: [1, 2, 3], viewBox: '0 0 10 10', Base: () => null, slots: [slot('01A'), slot('02B')] },
+    { id: 'high', floors: [16, 17], viewBox: '0 0 10 10', Base: () => null, slots: [slot('01A')] },
   ],
 }
 
@@ -105,6 +110,14 @@ describe('floor helpers', () => {
     expect(counts.get(3)).toBe(2)
     expect(counts.get(16)).toBe(1)
     expect([...counts.values()].reduce((a, b) => a + b, 0)).toBe(3)
+  })
+
+  it('does not count units whose slot is missing on the plate', () => {
+    const offPlate = [unit({ id: 'x', unitNumber: '2404' }), unit({ id: 'y', unitNumber: '304A' }), unit({ id: 'z', unitNumber: '1001A' })]
+    expect(placeUnit(config, offPlate[0])).toBeNull() // slot 04 is not on the plate
+    expect(placeUnit(config, offPlate[1])).toBeNull() // slot 04A is not on the plate
+    expect(placeUnit(config, offPlate[2])).toBeNull() // floor 10 has no plate
+    expect(countUnitsByFloor(config, offPlate).size).toBe(0)
   })
 
   it('finds the plate for a floor', () => {

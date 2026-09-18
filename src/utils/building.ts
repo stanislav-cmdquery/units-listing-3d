@@ -56,10 +56,19 @@ export function getSlotStatus(unit: Unit | undefined, matchingIds: ReadonlySet<s
   return matchingIds.has(unit.id) ? 'available' : 'notMatching'
 }
 
+/** Where the unit is drawn, or null when its floor has no plate or the plate has no such slot. */
+export function placeUnit(config: BuildingConfig, unit: Unit): UnitLocation | null {
+  const location = resolveUnitLocation(config, unit)
+  if (!location) return null
+  const plate = getPlateForFloor(config, location.floor)
+  return plate?.slots.some((s) => s.slot === location.slot) ? location : null
+}
+
+/** Counts only units that are actually drawn on a plate, so the facade totals match the floor plates. */
 export function countUnitsByFloor(config: BuildingConfig, units: Unit[]): Map<number, number> {
   const counts = new Map<number, number>()
   for (const unit of units) {
-    const location = resolveUnitLocation(config, unit)
+    const location = placeUnit(config, unit)
     if (!location) continue
     counts.set(location.floor, (counts.get(location.floor) ?? 0) + 1)
   }

@@ -1,12 +1,12 @@
 'use client'
 
-import { useMemo, type ReactNode } from 'react'
+import { useEffect, useMemo, type ReactNode } from 'react'
 
 import { useUnitsListingConfig } from '../../context/UnitsListingContext'
 import type { BuildingConfig } from '../../types/building'
 import type { AvailabilityNav, NavChangeMeta } from '../../types/nav'
 import type { Unit } from '../../types/unit'
-import { buildFloorIndex, countUnitsByFloor, getPlateForFloor, isUnitAvailable } from '../../utils/building'
+import { buildFloorIndex, countUnitsByFloor, getPlateForFloor, isUnitAvailable, placeUnit } from '../../utils/building'
 import { navToSearchParams } from '../../utils/navParams'
 import type { UnitsFilter } from '../Grid/UnitsGrid'
 import { BuildingView } from './BuildingView'
@@ -55,6 +55,17 @@ export function Availability3D({
       floors: building.floors.map((f) => f.floor).sort((a, b) => a - b),
     }
   }, [building, units, filter.filteredUnits])
+
+  // Units that can't be drawn silently disappear from the 3D view; make that visible while developing.
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'production') return
+    const unplaced = units.filter((u) => isUnitAvailable(u) && !placeUnit(building, u)).map((u) => u.unitNumber)
+    if (unplaced.length) {
+      console.warn(
+        `[units-listing-3d] ${unplaced.length} available unit(s) have no slot on the floor plates and are hidden in the 3D view: ${unplaced.join(', ')}. Check building.resolveUnit and the plate slots.`
+      )
+    }
+  }, [building, units])
 
   const floor = nav.floor != null && model.floors.includes(nav.floor) ? nav.floor : null
   const plate = floor != null ? getPlateForFloor(building, floor) : null
