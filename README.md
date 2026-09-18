@@ -394,6 +394,7 @@ typed subset):
 | `--ul-plate-label-available` / `-label-available-muted` | `#363928` / `#7d845d` | Text on available units |
 | `--ul-plate-tooltip-bg` / `--ul-plate-tooltip-text` | `#1f1917` / `#e9e6e2` | Hover hints on the plate |
 | `--ul-building-floor-highlight` | `rgba(143, 185, 125, 0.8)` | Hovered floor band on the facade |
+| `--ul-3d-height` | `80lvh` | Desktop height of every 3D step. Set it to the viewport height left under your header (e.g. `calc(100lvh - 98px - 20px)`) so each step fits one screen |
 
 Every string is in `labels` (`selectFloor`, `hoverToSelectFloor`, `availableApartments`, `statusAvailable`,
 `hintAvailable`, `hintNotMatching`, `hintNotAvailable`, `shareTitle`, `netEffectiveNote`, …). Hints use `\n` for line
