@@ -10,8 +10,9 @@
   gap: 10px;
   padding: 8px 16px;
   border-radius: 200px;
-  background-color: var(--ul-color-bg);
+  background-color: var(--ul-filters-trigger-bg);
   color: var(--ul-color-price-text);
+  font-family: var(--ul-font-family);
   font-size: var(--ul-font-size-base);
   font-style: normal;
   font-weight: var(--ul-font-weight-medium);
@@ -24,11 +25,11 @@
 }
 
 .ul-filters-trigger:hover {
-  background-color: var(--ul-color-border);
+  background-color: var(--ul-filters-trigger-bg-hover);
 }
 
 .ul-filters-trigger-active {
-  background-color: var(--ul-color-border);
+  background-color: var(--ul-filters-trigger-bg-active);
   color: var(--ul-color-price-text);
 }
 
@@ -87,7 +88,7 @@
   display: flex;
   align-items: center;
   gap: var(--ul-space-2);
-  border: 1px solid var(--ul-color-price-text);
+  border: 1px solid var(--ul-price-input-border);
   border-radius: 200px;
   padding: 8px 16px;
   background-color: transparent;
@@ -96,7 +97,7 @@
 }
 
 .ul-filters-price-input-wrapper:hover {
-  background-color: var(--ul-color-surface-alt);
+  background-color: var(--ul-price-input-bg-hover);
 }
 
 .ul-filters-price-input-wrapper:has(.ul-filters-price-input:not(:placeholder-shown)),
@@ -105,7 +106,7 @@
 }
 
 .ul-filters-price-prefix {
-  color: var(--ul-color-price-text);
+  color: var(--ul-price-input-prefix);
   font-size: var(--ul-font-size-base);
   font-style: normal;
   font-weight: var(--ul-font-weight-medium);
@@ -131,7 +132,11 @@
 }
 
 .ul-filters-price-input::placeholder {
-  color: var(--ul-color-text-subtle);
+  color: var(--ul-price-input-placeholder);
+}
+
+.ul-filters-price-input-wrapper:hover .ul-filters-price-input::placeholder {
+  color: var(--ul-price-input-placeholder-hover);
 }
 
 .ul-filters-price-input::-webkit-inner-spin-button,
@@ -197,21 +202,21 @@
   border: none;
   font-family: var(--ul-font-family);
   background: transparent;
-  font-size: var(--ul-font-size-lg);
+  font-size: var(--ul-clear-btn-font-size);
   font-style: normal;
   font-weight: var(--ul-font-weight-medium);
   line-height: 110%;
-  text-transform: uppercase;
+  text-transform: var(--ul-control-text-transform);
   cursor: pointer;
   transition: color var(--ul-transition);
-  color: var(--ul-color-text-muted);
+  color: var(--ul-clear-btn-text);
   padding: 8px 16px;
   border-radius: var(--ul-radius-sm);
 }
 
 .ul-filters-clear-btn:hover {
-  color: var(--ul-color-price-text);
-  background-color: var(--ul-color-border);
+  color: var(--ul-clear-btn-text-hover);
+  background-color: var(--ul-clear-btn-bg-hover);
 }
 
 @media (min-width: 768px) {

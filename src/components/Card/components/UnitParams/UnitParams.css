@@ -24,5 +24,5 @@
 
 .ul-unit-params-circle {
   flex-shrink: 0;
-  color: var(--ul-color-text-subtle);
+  color: var(--ul-unit-params-dot);
 }

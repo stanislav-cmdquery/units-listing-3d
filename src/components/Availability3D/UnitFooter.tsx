@@ -30,6 +30,8 @@ export function UnitFooter({ unit, onShare }: Props) {
   const { net, gross } = unit.price
   const showGross = note != null && gross != null && net != null && gross > net
 
+  const isStudio = unit.beds === 0
+
   const handleBookTour = () => {
     if (renderBookTourModal) setBookTourOpen(true)
     onBookTour?.(unit)
@@ -40,9 +42,10 @@ export function UnitFooter({ unit, onShare }: Props) {
       <div className="ul-3d-footer-bar">
         <div className="ul-3d-footer-params">
           <span>{unit.unitNumber}</span>
-          <span className="ul-3d-footer-param" title={unit.beds === 0 ? labels.studioLabel : `${unit.beds} ${labels.bedsLabel}`}>
-            {unit.beds === 0 ? labels.studioLabel : unit.beds}
-            <BedIcon />
+          <span className="ul-3d-footer-param" title={isStudio ? labels.studioLabel : `${unit.beds} ${labels.bedsLabel}`}>
+            {isStudio ? labels.studioLabel : unit.beds}
+            {/* The studio label already says what the icon would: only a bed count needs it. */}
+            {!isStudio && <BedIcon />}
           </span>
           <span className="ul-3d-footer-param" title={`${unit.baths} ${labels.bathroomsLabel}`}>
             {unit.baths}

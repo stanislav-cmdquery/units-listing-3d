@@ -14,10 +14,44 @@
   --ul-color-accent-contrast: #fffaf5;
   --ul-color-price: rgb(229, 207, 180);
   --ul-color-price-text: #262523;
+  --ul-color-price-hover: rgba(229, 207, 180, 0.7);
+  --ul-color-price-pressed: var(--ul-color-price-hover);
+  --ul-color-price-pressed-text: var(--ul-color-price-text);
   --ul-color-concession: #b8463f;
   --ul-color-skeleton: #ebe5dc;
   --ul-color-skeleton-shine: #f5efe8;
   --ul-color-overlay: rgba(16, 16, 15, 0.5);
+  /* Card, skeleton and enlarged popup: the outer surface and the top/bottom
+     strips are themed apart from the generic surface/background tokens, since
+     a listing card is often the one place a host wants a different shade. */
+  --ul-card-bg: var(--ul-color-surface);
+  --ul-card-strip-bg: var(--ul-color-bg);
+  --ul-card-radius: var(--ul-radius-lg);
+  --ul-price-font-weight: 300;
+  --ul-action-font-weight: 300;
+  --ul-concession-popup-bg: rgba(254, 243, 229, 0.97);
+  --ul-concession-price-font-weight: var(--ul-font-weight-regular);
+  --ul-unit-params-dot: var(--ul-color-text-subtle);
+  /* Controls (view toggle, filters trigger, button group) */
+  --ul-control-text-transform: uppercase;
+  --ul-filters-trigger-bg: var(--ul-color-bg);
+  --ul-filters-trigger-bg-hover: var(--ul-color-border);
+  --ul-filters-trigger-bg-active: var(--ul-color-border);
+  --ul-clear-btn-font-size: var(--ul-font-size-lg);
+  --ul-clear-btn-text: var(--ul-color-text-muted);
+  --ul-clear-btn-text-hover: var(--ul-color-price-text);
+  --ul-clear-btn-bg-hover: var(--ul-color-border);
+  --ul-price-input-border: var(--ul-color-price-text);
+  --ul-price-input-bg-hover: var(--ul-color-surface-alt);
+  --ul-price-input-prefix: var(--ul-color-price-text);
+  --ul-price-input-placeholder: var(--ul-color-text-subtle);
+  --ul-price-input-placeholder-hover: var(--ul-price-input-placeholder);
+  /* Table */
+  --ul-table-head-bg: rgba(229, 207, 180, 0.3);
+  --ul-table-head-text: var(--ul-color-price-text);
+  --ul-table-head-font-weight: var(--ul-font-weight-bold);
+  --ul-table-row-bg: transparent;
+  --ul-table-promo-text: var(--ul-color-price-text);
   /* Unit type selector */
   --ul-unit-type-border: #382d29;
   --ul-unit-type-text: #382d29;
@@ -42,6 +76,8 @@
   --ul-plate-stroke: #332925;
   --ul-plate-label: #382d29;
   --ul-plate-label-muted: #a39e9d;
+  --ul-plate-number-font-size: 14px;
+  --ul-plate-type-font-size: 9px;
   --ul-plate-label-available: #363928;
   --ul-plate-label-available-muted: #7d845d;
   --ul-plate-tooltip-bg: #1f1917;
@@ -49,6 +85,8 @@
   --ul-building-floor-highlight: rgba(143, 185, 125, 0.8);
   --ul-building-floor-label-bg: #596c51;
   --ul-building-floor-label-text: #f4f1ed;
+  /* Horizontal gap between the hovered floor's label and the building image. */
+  --ul-building-floor-label-offset: 0px;
   --ul-3d-surface: #fefefe;
   --ul-link-pressed: #605754;
   --ul-clear-text: #605754;
@@ -57,6 +95,7 @@
   --ul-sheet-divider: #dcd3c8;
   --ul-sheet-clear-text: #a48d70;
   --ul-footer-note-text: #605754;
+  --ul-footer-price-gross-text: var(--ul-color-text-muted);
   /* Radii */
   --ul-radius-xs: 4px;
   --ul-radius-sm: 8px;
@@ -86,6 +125,8 @@
   --ul-line-height: 1.4;
   /* Layout */
   --ul-grid-min-col: 260px;
+  --ul-grid-header-gap-mobile: var(--ul-space-5);
+  --ul-grid-header-gap: var(--ul-space-5);
   --ul-grid-gap-mobile: 12px;
   --ul-grid-gap: 20px;
   /* Motion */

@@ -11,3 +11,8 @@
   color: var(--ul-color-text);
   line-height: var(--ul-line-height);
 }
+
+/* Themed portal wrapper: carries the variables, never a box. */
+.ul-portal-root {
+  display: contents;
+}

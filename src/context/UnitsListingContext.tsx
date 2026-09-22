@@ -1,5 +1,5 @@
 'use client'
-import { createContext, useContext, type ReactNode } from 'react'
+import { createContext, useContext, type CSSProperties, type ReactNode } from 'react'
 import type { ImageComponent } from '../adapters/image'
 import type { MotionAdapter } from '../adapters/motion'
 import type { CopyIconComponent } from '../adapters/copyIcon'
@@ -126,6 +126,8 @@ export const defaultLabels: UnitsListingLabels = {
 
 export interface UnitsListingConfig {
   labels: UnitsListingLabels
+  /** Theme variables of the listing root, re-applied inside portals. */
+  themeStyle: CSSProperties
   ImageComponent: ImageComponent
   CopyIconComponent: CopyIconComponent
   motion: MotionAdapter
@@ -138,6 +140,7 @@ export interface UnitsListingConfig {
 
 export interface UnitsListingConfigInput {
   labels?: Partial<UnitsListingLabels>
+  themeStyle?: CSSProperties
   ImageComponent?: ImageComponent
   CopyIconComponent?: CopyIconComponent
   motion?: MotionAdapter
@@ -150,6 +153,7 @@ export interface UnitsListingConfigInput {
 
 const UnitsListingContext = createContext<UnitsListingConfig>({
   labels: defaultLabels,
+  themeStyle: {},
   ImageComponent: DefaultImage,
   CopyIconComponent: DefaultCopyIcon,
   motion: defaultMotionAdapter,
@@ -167,6 +171,7 @@ export function UnitsListingProvider({
 }) {
   const merged: UnitsListingConfig = {
     labels: { ...defaultLabels, ...value.labels },
+    themeStyle: value.themeStyle ?? {},
     ImageComponent: value.ImageComponent ?? DefaultImage,
     CopyIconComponent: value.CopyIconComponent ?? DefaultCopyIcon,
     motion: value.motion ?? defaultMotionAdapter,

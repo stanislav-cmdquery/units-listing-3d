@@ -237,7 +237,7 @@
   line-height: 1.4;
   white-space: nowrap;
   pointer-events: none;
-  transform: translateY(-100%);
+  transform: translate(var(--ul-building-floor-label-offset), -100%);
 }
 
 .ul-bmap-image {
@@ -332,12 +332,12 @@
 }
 
 .ul-plate-slot-number {
-  font-size: 14px;
+  font-size: var(--ul-plate-number-font-size);
   fill: var(--ul-plate-label);
 }
 
 .ul-plate-slot-type {
-  font-size: 9px;
+  font-size: var(--ul-plate-type-font-size);
   fill: var(--ul-plate-label-muted);
 }
 
@@ -726,7 +726,7 @@
 }
 
 .ul-3d-footer-price-gross {
-  color: var(--ul-color-text-muted);
+  color: var(--ul-footer-price-gross-text);
 }
 
 /* On mobile the actions wrap onto their own row: FLOORPLAN on the left, BOOK TOUR on the right. */
@@ -1017,7 +1017,6 @@
   }
 
   .ul-3d-footer-note {
-    color: var(--ul-color-text-muted);
     font-size: var(--ul-font-size-md);
   }
 
