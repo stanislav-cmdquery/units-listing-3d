@@ -14,18 +14,20 @@
 }
 
 .ul-table-table thead {
-  background-color: rgba(229, 207, 180, 0.3);
+  background-color: var(--ul-table-head-bg);
   border-bottom: solid 1px var(--ul-color-price);
 }
 
 .ul-table-th {
   padding: 10px 8px;
+  /* Split out so a host can breathe the header row apart from the cells. */
+  padding-bottom: var(--ul-table-head-padding-bottom, 10px);
   text-align: left;
   font-size: var(--ul-font-size-md);
   font-style: normal;
-  font-weight: var(--ul-font-weight-bold);
+  font-weight: var(--ul-table-head-font-weight);
   line-height: 140%;
-  color: var(--ul-color-price-text);
+  color: var(--ul-table-head-text);
   white-space: nowrap;
   position: sticky;
   top: 0;
@@ -93,6 +95,7 @@
   line-height: 110%;
   letter-spacing: -0.32px;
   color: var(--ul-color-price-text);
+  background-color: var(--ul-table-row-bg);
   border-top: solid 1px var(--ul-color-price);
   white-space: nowrap;
   vertical-align: middle;
@@ -197,7 +200,7 @@
 }
 
 .ul-table-promo-tag {
-  color: var(--ul-color-price-text);
+  color: var(--ul-table-promo-text);
 }
 
 .ul-table-action-wrapper {
@@ -292,6 +295,7 @@
 
   .ul-table-th {
     padding: 16px 20px;
+    padding-bottom: var(--ul-table-head-padding-bottom, 16px);
   }
 
   .ul-table-td {

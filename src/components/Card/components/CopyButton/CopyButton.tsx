@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { createPortal } from 'react-dom'
 
+import { Portal } from '../../../../ui/Portal/Portal'
 import { useUnitsListingConfig } from '../../../../context/UnitsListingContext'
 import { formatUSD } from '../../../../utils/formatPrice'
 import { CopyHoverInfo } from '../CopyHoverInfo/CopyHoverInfo'
@@ -66,16 +66,16 @@ export function CopyButton({ unitNumber, beds, baths, priceNet, priceGross }: Pr
     >
       <CopyIconComponent />
 
-      {tooltipPosition &&
-        createPortal(
+      {tooltipPosition && (
+        <Portal>
           <CopyHoverInfo
             className="ul-copy-btn-info"
             style={{ top: tooltipPosition.top, left: tooltipPosition.left }}
           >
             Copy to clipboard
-          </CopyHoverInfo>,
-          document.body,
-        )}
+          </CopyHoverInfo>
+        </Portal>
+      )}
     </div>
   )
 }

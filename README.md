@@ -436,7 +436,10 @@ typed subset):
 | `--ul-3d-bleed` | `20px` | Mobile side gutter of your section; the filters bar and the Select Building row extend into it to reach the screen edges |
 | `--ul-sheet-bg` / `--ul-sheet-divider` | `#f4f1ed` / `#dcd3c8` | Mobile filters sheet background; header rule and footer background |
 | `--ul-sheet-clear-text` | `#a48d70` | Clear Filters in the mobile filters sheet |
-| `--ul-footer-note-text` | `#605754` | Net effective note under the unit footer (mobile) |
+| `--ul-footer-note-text` | `#605754` | Net effective note under the unit footer |
+| `--ul-footer-price-gross-text` | `var(--ul-color-text-muted)` | Struck-out gross price in the unit footer |
+| `--ul-plate-number-font-size` / `--ul-plate-type-font-size` | `14px` / `9px` | Unit number and type captions on a plate slot |
+| `--ul-building-floor-label-offset` | `0px` | Horizontal gap between the hovered floor's label and the building image |
 
 Every string is in `labels` (`selectFloor`, `hoverToSelectFloor`, `availableApartments`, `statusAvailable`,
 `hintAvailable`, `hintNotMatching`, `hintNotAvailable`, `floorLabel`, `shareTitle`, `netEffectiveNote`, …). Hints use `\n` for line
@@ -483,6 +486,9 @@ All visual values are CSS custom properties. Override them at any scope:
 />
 ```
 
+Portalled UI (the enlarged popup, the mobile filters sheet, tooltips) mounts on `document.body` and is wrapped in a
+themed `.ul-root` of its own, so `theme`/`themeVars` reach it the same as the inline parts.
+
 ### Via CSS (zero JS)
 
 ```css
@@ -508,7 +514,26 @@ All visual values are CSS custom properties. Override them at any scope:
 | `--ul-color-accent` | `#2c201c` | Buttons, active states |
 | `--ul-color-accent-contrast` | `#fffaf5` | Text on accent |
 | `--ul-color-price` | `rgb(229, 207, 180)` | Price pill background |
+| `--ul-color-price-hover` | `rgba(229, 207, 180, 0.7)` | Price pill hover |
+| `--ul-color-price-pressed` / `-pressed-text` | `var(--ul-color-price-hover)` / `var(--ul-color-price-text)` | Price pill while pressed |
 | `--ul-color-concession` | `#b8463f` | Concession badge |
+| `--ul-card-bg` | `var(--ul-color-surface)` | Card, skeleton and enlarged popup body |
+| `--ul-card-strip-bg` | `var(--ul-color-bg)` | Their top/bottom strips |
+| `--ul-card-radius` | `var(--ul-radius-lg)` | Their corner radius |
+| `--ul-price-font-weight` | `300` | Price text in the card, popup and concession |
+| `--ul-concession-price-font-weight` | `var(--ul-font-weight-regular)` | Concession price row |
+| `--ul-action-font-weight` | `300` | Book Tour / Floorplan actions under a card |
+| `--ul-concession-popup-bg` | `rgba(254, 243, 229, 0.97)` | Concession popup over a card |
+| `--ul-unit-params-dot` | `var(--ul-color-text-subtle)` | Separator dot between unit facts |
+| `--ul-control-text-transform` | `uppercase` | Case of view toggle, filters trigger and button group labels |
+| `--ul-filters-trigger-bg` / `-bg-hover` / `-bg-active` | `var(--ul-color-bg)` / `var(--ul-color-border)` / `var(--ul-color-border)` | Filters trigger states |
+| `--ul-clear-btn-font-size` / `-text` / `-text-hover` / `-bg-hover` | `var(--ul-font-size-lg)` / `var(--ul-color-text-muted)` / `var(--ul-color-price-text)` / `var(--ul-color-border)` | Clear filters button |
+| `--ul-price-input-border` / `-bg-hover` / `-prefix` | `var(--ul-color-price-text)` / `var(--ul-color-surface-alt)` / `var(--ul-color-price-text)` | Price range inputs |
+| `--ul-price-input-placeholder` / `-placeholder-hover` | `var(--ul-color-text-subtle)` | Their placeholders |
+| `--ul-table-head-bg` / `-head-text` / `-head-font-weight` | `rgba(229, 207, 180, 0.3)` / `var(--ul-color-price-text)` / `var(--ul-font-weight-bold)` | List view header row |
+| `--ul-table-head-padding-bottom` | bottom of the header cell's own padding | Breathing room under the header row |
+| `--ul-table-row-bg` / `--ul-table-promo-text` | `transparent` / `var(--ul-color-price-text)` | List view cells and promo tag |
+| `--ul-grid-header-gap-mobile` / `--ul-grid-header-gap` | `24px` | Space under the grid header, below / from 768px |
 | `--ul-radius-sm` | `8px` | Small radius |
 | `--ul-radius-md` | `12px` | Medium radius |
 | `--ul-radius-lg` | `20px` | Card radius |

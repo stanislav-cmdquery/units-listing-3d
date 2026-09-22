@@ -55,9 +55,9 @@ export function UnitsListing({
   )
 
   const providerValue = useMemo(
-    () => ({ labels, ImageComponent, CopyIconComponent, motion, pageSize, skeletonCount, priceStep, onBookTour, renderBookTourModal }),
+    () => ({ labels, themeStyle, ImageComponent, CopyIconComponent, motion, pageSize, skeletonCount, priceStep, onBookTour, renderBookTourModal }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [labels, ImageComponent, CopyIconComponent, motion, pageSize, skeletonCount, priceStep, onBookTour, renderBookTourModal]
+    [labels, themeStyle, ImageComponent, CopyIconComponent, motion, pageSize, skeletonCount, priceStep, onBookTour, renderBookTourModal]
   )
 
   const views = useMemo<ViewMode[]>(() => {

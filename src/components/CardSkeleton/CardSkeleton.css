@@ -2,8 +2,8 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  background-color: var(--ul-color-surface);
-  border-radius: var(--ul-radius-lg);
+  background-color: var(--ul-card-bg);
+  border-radius: var(--ul-card-radius);
   overflow: hidden;
   position: relative;
 }
@@ -14,7 +14,7 @@
   align-items: center;
   gap: var(--ul-space-1);
   padding: var(--ul-space-3) var(--ul-space-4);
-  background-color: var(--ul-color-bg);
+  background-color: var(--ul-card-strip-bg);
 }
 
 .ul-skeleton-params {
@@ -70,7 +70,7 @@
   justify-content: space-between;
   gap: var(--ul-space-1);
   padding: var(--ul-space-3);
-  background-color: var(--ul-color-bg);
+  background-color: var(--ul-card-strip-bg);
 }
 
 .ul-skeleton-action-pill {

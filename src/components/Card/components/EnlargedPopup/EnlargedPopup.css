@@ -16,8 +16,8 @@
   max-height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: var(--ul-color-surface);
-  border-radius: var(--ul-radius-lg);
+  background-color: var(--ul-card-bg);
+  border-radius: var(--ul-card-radius);
   overflow: hidden;
   color: var(--ul-color-text-secondary);
 }
@@ -29,7 +29,7 @@
   justify-content: space-between;
   gap: var(--ul-space-2);
   padding: var(--ul-space-4);
-  background-color: var(--ul-color-bg);
+  background-color: var(--ul-card-strip-bg);
   flex-shrink: 0;
 }
 
@@ -44,7 +44,7 @@
   color: var(--ul-color-price-text);
   font-size: var(--ul-font-size-xl);
   font-style: normal;
-  font-weight: 300;
+  font-weight: var(--ul-price-font-weight);
   line-height: 130%;
   letter-spacing: 0.6px;
   text-transform: uppercase;
@@ -62,7 +62,12 @@ button.ul-enlarged-price-net {
 }
 
 button.ul-enlarged-price-net:hover {
-  background-color: rgba(229, 207, 180, 0.7);
+  background-color: var(--ul-color-price-hover);
+}
+
+button.ul-enlarged-price-net:active {
+  background-color: var(--ul-color-price-pressed);
+  color: var(--ul-color-price-pressed-text);
 }
 
 .ul-enlarged-close-btn {
@@ -175,7 +180,7 @@ button.ul-enlarged-price-net:hover {
   justify-content: space-between;
   gap: var(--ul-space-2);
   padding: var(--ul-space-3) var(--ul-space-4);
-  background-color: var(--ul-color-bg);
+  background-color: var(--ul-card-strip-bg);
   flex-shrink: 0;
 }
 

@@ -3,8 +3,8 @@
 import clsx from 'clsx'
 import type { ReactNode } from 'react'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { createPortal } from 'react-dom'
 
+import { Portal } from '../Portal/Portal'
 import { useUnitsListingConfig } from '../../context/UnitsListingContext'
 import { useClickOutside } from '../../hooks/useClickOutside'
 import './Tooltip.css'
@@ -101,64 +101,62 @@ export function Tooltip({ content, children, trigger = 'hover', className, rootC
         {children}
       </div>
 
-      {typeof document !== 'undefined' &&
-        createPortal(
-          <AnimatePresence>
-            {isOpen && (
-              <div
-                ref={tooltipRef}
-                className="ul-tooltip-positioner"
-                style={tooltipStyle}
-                onMouseLeave={handleTooltipMouseLeave}
+      <Portal>
+        <AnimatePresence>
+          {isOpen && (
+            <div
+              ref={tooltipRef}
+              className="ul-tooltip-positioner"
+              style={tooltipStyle}
+              onMouseLeave={handleTooltipMouseLeave}
+            >
+              <MotionDiv
+                className="ul-tooltip-box"
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 4 }}
+                transition={{ duration: 0.15, ease: 'easeOut' }}
               >
-                <MotionDiv
-                  className="ul-tooltip-box"
-                  initial={{ opacity: 0, y: 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 4 }}
-                  transition={{ duration: 0.15, ease: 'easeOut' }}
-                >
-                  {trigger === 'click' && (
-                    <button
-                      type="button"
-                      className="ul-tooltip-close"
-                      onClick={() => setIsOpen(false)}
-                      aria-label="Close tooltip"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11" fill="none">
-                        <path
-                          d="M9.75 9.75L0.75 0.75"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M0.75 9.75L9.75 0.75"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </button>
-                  )}
-
-                  <div className={trigger === 'click' ? 'ul-tooltip-content-with-close' : 'ul-tooltip-content'}>
-                    {content}
-                  </div>
-
-                  <div ref={arrowRef} className="ul-tooltip-arrow">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="8" viewBox="0 0 16 8" fill="none">
-                      <path d="M8 8L0 0L16 0L8 8Z" fill="currentColor" />
+                {trigger === 'click' && (
+                  <button
+                    type="button"
+                    className="ul-tooltip-close"
+                    onClick={() => setIsOpen(false)}
+                    aria-label="Close tooltip"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11" fill="none">
+                      <path
+                        d="M9.75 9.75L0.75 0.75"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M0.75 9.75L9.75 0.75"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
-                  </div>
-                </MotionDiv>
-              </div>
-            )}
-          </AnimatePresence>,
-          document.body,
-        )}
+                  </button>
+                )}
+
+                <div className={trigger === 'click' ? 'ul-tooltip-content-with-close' : 'ul-tooltip-content'}>
+                  {content}
+                </div>
+
+                <div ref={arrowRef} className="ul-tooltip-arrow">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="8" viewBox="0 0 16 8" fill="none">
+                    <path d="M8 8L0 0L16 0L8 8Z" fill="currentColor" />
+                  </svg>
+                </div>
+              </MotionDiv>
+            </div>
+          )}
+        </AnimatePresence>
+      </Portal>
     </div>
   )
 }

@@ -1,7 +1,7 @@
 .ul-concession-popup {
   position: absolute;
   inset: 0;
-  background-color: rgba(254, 243, 229, 0.97);
+  background-color: var(--ul-concession-popup-bg);
   cursor: pointer;
   z-index: 2;
   animation: show 150ms cubic-bezier(0.38, 0.97, 0.56, 0.76) forwards;
@@ -24,7 +24,7 @@
   color: var(--ul-color-accent);
   font-size: 32px;
   font-style: normal;
-  font-weight: var(--ul-font-weight-regular);
+  font-weight: var(--ul-concession-price-font-weight);
   line-height: 100%;
   display: flex;
   gap: var(--ul-space-2);
@@ -41,7 +41,7 @@
 
 .ul-concession-price-gross {
   color: var(--ul-color-text-muted);
-  font-weight: 300;
+  font-weight: var(--ul-price-font-weight);
   display: flex;
   align-items: center;
   gap: var(--ul-space-1);
