@@ -183,7 +183,11 @@ changes are needed.
 ### Adapting the package to a new building
 
 A complete, working example is the Luma Living config: `features/availability/building/` in the `luma-living` repo
-(`building.ts`, `floors.ts`, `TypicalPlate.tsx`, `assets/building.webp`). Copy its structure.
+(`building.ts`, `floors.ts`, `plates/`, `assets/building.webp`). Copy its structure.
+
+How many plates you need depends on the building. Where several floors share a layout, one plate can list them all in
+`floors`. Where every floor differs — a tower that steps back as it rises — write one plate per floor; Luma generates
+its 22 from the architect's drawings with a script, rather than by hand.
 
 #### 1. What to get from design
 
@@ -191,10 +195,10 @@ A complete, working example is the Luma Living config: `features/availability/bu
 |-------|----------|-------|
 | Facade render | `building.image` | One flat image. Export the exact frame the floor bands are drawn over (crop matters, see step 2). 2x PNG → WebP is plenty. |
 | One polygon per floor | `building.floors` | Ask the designer for a (hidden) layer of vector shapes, one per floor, named by floor number, drawn over the render. |
-| One vector drawing per *typical* floor plate | `building.plates` | Floors with an identical layout share a plate. Unit outlines must be separate vectors; unit number/type labels as text frames. |
+| One vector drawing per distinct floor plate | `building.plates` | Floors with an identical layout can share a plate; where each floor differs, expect one per floor. Unit outlines must be separate vectors; unit number/type labels as text frames. |
 | Unit numbering scheme | `resolveUnit` | How a unit number from the data maps to floor + position (e.g. `304A` = floor 3, slot `04A`). |
 | Building sections (optional) | `building.sections` | When several buildings/wings share a plate (Luma: 362/370/372 Livingston). |
-| Mobile designs | `sections[].viewBox` | Each building's area on the plate. On a phone the plate is scaled so the widest section fills the screen and can be dragged sideways; picking a building pans to its area. |
+| Mobile designs | `sections[].viewBox` | Each building's area on the plate. On a phone the plate is scaled so the widest section fills the screen and can be dragged sideways; picking a building pans to its area. Once plates differ in shape this belongs on each plate instead — see `FloorPlate.sections` below. |
 
 #### 2. Extract the geometry from Figma
 
@@ -235,7 +239,7 @@ With the Figma MCP server (or the REST API):
 building/
   assets/building.webp
   floors.ts          // BuildingFloor[]
-  TypicalPlate.tsx   // FloorPlate (Base + slots); one file per typical plate
+  plates/            // FloorPlate (Base + slots); one file per distinct plate
   building.ts        // BuildingConfig
 ```
 
@@ -248,7 +252,7 @@ export const BUILDING_FLOORS: BuildingFloor[] = [
 ```
 
 ```tsx
-// TypicalPlate.tsx
+// plates/TypicalPlate.tsx
 const STROKE = { stroke: 'var(--ul-plate-stroke)', strokeWidth: 1.5, fill: 'none' } as const
 
 function TypicalPlateBase() {
@@ -300,6 +304,30 @@ export const BUILDING: BuildingConfig = {
   // resolveUnit, formatUnitNumber — see below
 }
 ```
+
+#### Plates that differ in shape
+
+`sections[].viewBox` above is one box per section for the whole building, which only works while every plate has the
+same outline. Once the plates differ — a tower stepping back, a wing that ends partway up — give each plate its own
+`sections`, and leave `viewBox` off the building's:
+
+```ts
+{
+  id: 'floor-16',
+  floors: [16],
+  viewBox: PLATE_VIEW_BOX,          // shared across plates, so shorter floors read as shorter
+  sections: [                       // ids from building.sections; labels stay there
+    { id: 'C', viewBox: '52.9 28.3 407.5 217.8' },
+    { id: 'B', viewBox: '449 28.3 351.3 217.8' },
+  ],
+  Base: Floor16Base,
+  slots: FLOOR_16_SLOTS,
+}
+```
+
+A plate's `sections` also says which sections exist on that floor: leave one out and its pill disappears there. A floor
+with no plate at all — a retail or amenity level listed in `floors` — shows `labels.floorPlanUnavailable` in place of
+the plate and offers no sections. Leave such floors out of `floors` entirely if they should not be selectable at all.
 
 Rules the package relies on:
 

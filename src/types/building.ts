@@ -24,7 +24,6 @@ export interface PlateSection {
   id: string
   /** This section's area on this plate, in `FloorPlate.viewBox` coordinates. */
   viewBox?: string
-  label?: string
 }
 
 /** A unit position on a floor plate. The same slot repeats on every floor that uses the plate. */

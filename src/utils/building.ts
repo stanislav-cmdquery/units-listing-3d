@@ -38,7 +38,8 @@ export function getSectionsForFloor(config: BuildingConfig, floor: number): Buil
   return config.sections.flatMap((section) => {
     const override = onPlate.get(section.id)
     if (!override) return []
-    return [{ ...section, label: override.label ?? section.label, viewBox: override.viewBox ?? section.viewBox }]
+    // The label stays with the building: a section is the same wing whichever floor you are on.
+    return [{ ...section, viewBox: override.viewBox ?? section.viewBox }]
   })
 }
 
