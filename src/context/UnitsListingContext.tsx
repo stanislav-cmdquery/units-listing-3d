@@ -31,6 +31,8 @@ export interface UnitsListingLabels {
   availableApartments: string
   floorSuffix: string
   returnToBuilding: string
+  /** Shown in place of the plate on a floor that has no drawing, e.g. retail levels. */
+  floorPlanUnavailable: string
   returnToFloor: string
   statusAvailable: string
   statusNotMatching: string
@@ -89,6 +91,7 @@ export const defaultLabels: UnitsListingLabels = {
   availableApartments: 'Available Apartments',
   floorSuffix: 'floor',
   returnToBuilding: 'Return to building',
+  floorPlanUnavailable: 'No floor plan for this floor',
   returnToFloor: 'Return to floor',
   statusAvailable: 'Available',
   statusNotMatching: 'Not matching preferences',

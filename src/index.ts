@@ -14,6 +14,7 @@ export {
   defaultResolveUnit,
   isUnitAvailable,
   getPlateForFloor,
+  getSectionsForFloor,
   buildFloorIndex,
   getSlotStatus,
   getOrdinal,
@@ -26,6 +27,7 @@ export type {
   BuildingSection,
   FloorPlate,
   FloorPlateSlot,
+  PlateSection,
   UnitLocation,
   SlotStatus,
 } from './types/building'

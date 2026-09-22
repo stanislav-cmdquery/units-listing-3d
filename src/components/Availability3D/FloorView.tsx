@@ -3,7 +3,7 @@
 import { useUnitsListingConfig } from '../../context/UnitsListingContext'
 import { DESKTOP_QUERY, useMediaQuery } from '../../hooks/useMediaQuery'
 import { Pills } from '../../ui/Pills'
-import { getOrdinal, getPlateForFloor } from '../../utils/building'
+import { getOrdinal, getPlateForFloor, getSectionsForFloor } from '../../utils/building'
 import type { UnitsFilter } from '../Grid/UnitsGrid'
 import { BackButton } from './BackButton'
 import { FiltersSheet } from './FiltersSheet'
@@ -37,7 +37,7 @@ export function FloorView({
   const { labels } = useUnitsListingConfig()
   const isDesktop = useMediaQuery(DESKTOP_QUERY)
   const plate = getPlateForFloor(model.building, floor)
-  const { sections } = model.building
+  const sections = getSectionsForFloor(model.building, floor)
   // Mobile pans the plate to one section at a time; default to the first one.
   const mobileSection = section ?? sections[0]?.id ?? null
 
@@ -90,7 +90,7 @@ export function FloorView({
               onSelectUnit={onSelectUnit}
             />
           ) : (
-            <p className="ul-3d-empty">{labels.emptyTitle}</p>
+            <p className="ul-3d-empty">{labels.floorPlanUnavailable}</p>
           )}
           <p className="ul-3d-chip ul-3d-mobile-only">
             {getOrdinal(floor)} {labels.floorSuffix}

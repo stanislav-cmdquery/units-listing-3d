@@ -2,6 +2,7 @@
 
 import { useUnitsListingConfig } from '../../context/UnitsListingContext'
 import { Pills } from '../../ui/Pills'
+import { getSectionsForFloor } from '../../utils/building'
 import { RangeSlider } from '../../ui/RangeSlider'
 import type { UnitsFilter } from '../Grid/UnitsGrid'
 import type { BuildingModel } from './model'
@@ -31,6 +32,8 @@ export function FloorFilters({
 }: Props) {
   const { labels, priceStep } = useUnitsListingConfig()
   const { priceBounds } = filter
+  // Upper floors can drop a section entirely, so the picker follows the floor rather than the building.
+  const sections = floor != null ? getSectionsForFloor(model.building, floor) : model.building.sections
   const hasPriceRange = priceBounds.max > priceBounds.min
 
   const bedsValue: AnyOr<number> = filter.unitTypeFilter.length === 1 ? filter.unitTypeFilter[0] : 'any'
@@ -45,13 +48,13 @@ export function FloorFilters({
 
   return (
     <div className="ul-3d-filters">
-      {onSectionChange && model.building.sections.length > 1 && (
+      {onSectionChange && sections.length > 1 && (
         <div className="ul-3d-field">
           <p className="ul-3d-field-label">{labels.selectBuilding}</p>
           <Pills
             label={labels.selectBuilding}
             className="ul-3d-section-pills"
-            options={model.building.sections.map((s) => ({ value: s.id, label: s.label }))}
+            options={sections.map((s) => ({ value: s.id, label: s.label }))}
             value={section ?? null}
             // Toggle: clicking the selected building clears the emphasis.
             onChange={(id) => onSectionChange(id === section ? null : id)}

@@ -19,6 +19,14 @@ export interface BuildingSection {
   viewBox?: string
 }
 
+/** One section of `BuildingConfig.sections` as it falls on a single plate. */
+export interface PlateSection {
+  id: string
+  /** This section's area on this plate, in `FloorPlate.viewBox` coordinates. */
+  viewBox?: string
+  label?: string
+}
+
 /** A unit position on a floor plate. The same slot repeats on every floor that uses the plate. */
 export interface FloorPlateSlot {
   /** Unit number without the floor prefix, e.g. `04A` for unit `304A`. */
@@ -39,6 +47,12 @@ export interface FloorPlate {
   id: string
   floors: number[]
   viewBox: string
+  /**
+   * Sections as they fall on this plate, when the plates differ in shape from floor to floor.
+   * Overrides `BuildingConfig.sections` for the mobile pan and the section pickers; sections left
+   * out here have no units on this floor. Falls back to `BuildingConfig.sections`.
+   */
+  sections?: PlateSection[]
   /** Static part of the plate (walls, balconies, cores, captions). Unit slots are drawn on top by the package. */
   Base: ComponentType
   slots: FloorPlateSlot[]

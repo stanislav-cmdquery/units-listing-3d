@@ -38,8 +38,10 @@ export function PlatePan({ model, plate, floor, section, onSectionChange, onSele
   const plateBox = parseViewBox(plate.viewBox)
   const sectionBoxes = useMemo(
     () =>
-      model.building.sections.flatMap((s) => (s.viewBox ? [{ id: s.id, box: parseViewBox(s.viewBox) }] : [])),
-    [model.building.sections]
+      (plate.sections ?? model.building.sections).flatMap((s) =>
+        s.viewBox ? [{ id: s.id, box: parseViewBox(s.viewBox) }] : []
+      ),
+    [plate.sections, model.building.sections]
   )
   const widestSection = Math.max(...sectionBoxes.map((s) => s.box.width), 0) || plateBox.width
 

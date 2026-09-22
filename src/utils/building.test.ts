@@ -9,6 +9,7 @@ import {
   formatSlotUnitNumber,
   getOrdinal,
   getPlateForFloor,
+  getSectionsForFloor,
   getSlotStatus,
   isUnitAvailable,
   placeUnit,
@@ -148,3 +149,38 @@ describe('getOrdinal', () => {
     expect(getOrdinal(n)).toBe(expected)
   })
 })
+
+describe('getSectionsForFloor', () => {
+  const sectioned: BuildingConfig = {
+    ...config,
+    sections: [
+      { id: 'C', label: 'Third', viewBox: '0 0 3 3' },
+      { id: 'B', label: 'Second' },
+      { id: 'A', label: 'First' },
+    ],
+    plates: [
+      { id: 'low', floors: [3], viewBox: '0 0 10 10', Base: () => null, slots: [slot('01A')] },
+      {
+        id: 'high',
+        floors: [16],
+        viewBox: '0 0 10 10',
+        Base: () => null,
+        sections: [{ id: 'A', viewBox: '1 1 4 4' }],
+        slots: [slot('01A')],
+      },
+    ],
+  }
+
+  it('falls back to the building sections when a plate declares none', () => {
+    expect(getSectionsForFloor(sectioned, 3)).toEqual(sectioned.sections)
+  })
+
+  it('narrows to the sections the plate has, keeping the building order and labels', () => {
+    expect(getSectionsForFloor(sectioned, 16)).toEqual([{ id: 'A', label: 'First', viewBox: '1 1 4 4' }])
+  })
+
+  it('has no sections on a floor without a plate', () => {
+    expect(getSectionsForFloor(sectioned, 2)).toEqual([])
+  })
+})
+

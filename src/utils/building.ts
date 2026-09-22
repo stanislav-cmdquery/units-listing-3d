@@ -1,4 +1,4 @@
-import type { BuildingConfig, FloorPlate, SlotStatus, UnitLocation } from '../types/building'
+import type { BuildingConfig, BuildingSection, FloorPlate, SlotStatus, UnitLocation } from '../types/building'
 import type { Unit } from '../types/unit'
 
 // The slot is the last two digits plus an optional letter suffix; everything before it is the floor.
@@ -23,6 +23,23 @@ export function formatSlotUnitNumber(config: BuildingConfig, floor: number, slot
 
 export function isUnitAvailable(unit: Unit): boolean {
   return unit.status == null || unit.status === 'available'
+}
+
+/**
+ * The sections that exist on a floor, in the order `BuildingConfig.sections` lists them. Plates may
+ * narrow the list — upper floors can drop a section entirely — and carry their own pan boxes.
+ */
+export function getSectionsForFloor(config: BuildingConfig, floor: number): BuildingSection[] {
+  const plate = getPlateForFloor(config, floor)
+  // No plate means no units to pick a section from, e.g. a retail level.
+  if (!plate) return []
+  if (!plate.sections) return config.sections
+  const onPlate = new Map(plate.sections.map((section) => [section.id, section]))
+  return config.sections.flatMap((section) => {
+    const override = onPlate.get(section.id)
+    if (!override) return []
+    return [{ ...section, label: override.label ?? section.label, viewBox: override.viewBox ?? section.viewBox }]
+  })
 }
 
 export function getPlateForFloor(config: BuildingConfig, floor: number): FloorPlate | null {
